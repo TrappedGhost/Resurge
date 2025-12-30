@@ -5,9 +5,11 @@
 
 extern Resug::Application* Resug::CreateApplication();
 
-int main()
+int main(int argc, char** argv)
 {
-	printf("Hello");
+	Resug::Log::Init();
+	int a = 12;
+	RG_CORE_INFO("hello world;{0}",a);
 	auto app = Resug::CreateApplication();
 	app->Run();
 	delete app;
