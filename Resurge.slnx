@@ -1,7 +1,0 @@
-<Solution>
-  <Configurations>
-    <Platform Name="x64" />
-  </Configurations>
-  <Project Path="SandBox/SandBox.vcxproj" Id="4a8adb19-25c5-46c8-96d6-b509e70f8d92" />
-  <Project Path="Resurge/Resurge.vcxproj" Id="973fc59d-73ab-43f5-830a-517922887595" />
-</Solution>

@@ -19,6 +19,8 @@
     <ClInclude Include="src\Resug\Log.h">
       <Filter>Resug</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Event\Event.h" />
+    <ClInclude Include="src\Resug\Event\KeyEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Resug\Application.cpp">
