@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RG_PLATFORM_WINDOWS;RG_BUILD_DLL;RG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -104,7 +104,7 @@ copy /B /Y ..\bin\Debug-windows-x86_64\Resurge\Resurge.dll ..\bin\Debug-windows-
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RG_PLATFORM_WINDOWS;RG_BUILD_DLL;RG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,7 +132,7 @@ copy /B /Y ..\bin\Release-windows-x86_64\Resurge\Resurge.dll ..\bin\Release-wind
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RG_PLATFORM_WINDOWS;RG_BUILD_DLL;RG_Dist;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -160,6 +160,7 @@ copy /B /Y ..\bin\Dist-windows-x86_64\Resurge\Resurge.dll ..\bin\Dist-windows-x8
     <ClInclude Include="src\Resug\Application.h" />
     <ClInclude Include="src\Resug\Core.h" />
     <ClInclude Include="src\Resug\EntryPoint.h" />
+    <ClInclude Include="src\Resug\Event\ApplicationEvent.h" />
     <ClInclude Include="src\Resug\Event\Event.h" />
     <ClInclude Include="src\Resug\Event\KeyEvent.h" />
     <ClInclude Include="src\Resug\Event\MouseEvent.h" />

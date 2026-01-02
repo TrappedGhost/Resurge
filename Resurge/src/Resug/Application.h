@@ -1,5 +1,6 @@
 #pragma once
 #include"Core.h"
+#include "Event/Event.h"
 
 namespace Resug {
 	class RESUG_API Application

@@ -11,5 +11,6 @@
 #endif // RG_PLATFORM_WINDOWS
 
 #define BIT(x) (1<<x)
+#define uint unsigned int
 
 

@@ -4,6 +4,9 @@
     <Filter Include="Resug">
       <UniqueIdentifier>{6B34040E-D748-2CBF-A0CA-CF1E0C9E28F0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resug\Event">
+      <UniqueIdentifier>{FC19B8F4-68CF-30EA-F1C3-2AC15D7827EE}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Resug.h" />
@@ -16,11 +19,21 @@
     <ClInclude Include="src\Resug\EntryPoint.h">
       <Filter>Resug</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Event\ApplicationEvent.h">
+      <Filter>Resug\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Event\Event.h">
+      <Filter>Resug\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Event\KeyEvent.h">
+      <Filter>Resug\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Event\MouseEvent.h">
+      <Filter>Resug\Event</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Log.h">
       <Filter>Resug</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Event\Event.h" />
-    <ClInclude Include="src\Resug\Event\KeyEvent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Resug\Application.cpp">
