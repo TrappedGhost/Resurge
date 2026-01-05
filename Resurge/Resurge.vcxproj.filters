@@ -34,6 +34,9 @@
     <ClInclude Include="src\Resug\Log.h">
       <Filter>Resug</Filter>
     </ClInclude>
+    <ClInclude Include="src\rgpch.h" />
+    <ClInclude Include="src\Resug\Window.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Resug\Application.cpp">
@@ -42,5 +45,7 @@
     <ClCompile Include="src\Resug\Log.cpp">
       <Filter>Resug</Filter>
     </ClCompile>
+    <ClCompile Include="src\rgpch.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
   </ItemGroup>
 </Project>

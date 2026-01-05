@@ -1,6 +1,14 @@
 #pragma once
 
-#include"Resug/Core.h"
+#include<stdio.h>
+#include<iostream>
+#include<sstream>
+#include<functional>
+#include<memory>
 
-#ifdef RG_PLATFORM_WINDOW
-	include"Window.h"
+#include<string>
+#include<vector>
+
+#ifdef RG_PLATFORM_WINDOWS
+	#include<Windows.h>
+#endif

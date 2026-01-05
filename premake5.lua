@@ -16,6 +16,13 @@ workspace " Resurge"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+--include glfw
+IncludeDir = {}
+IncludeDir["GLFW"] = "Resurge/vendor/GLFW/include"
+include "Resurge/vendor/GLFW"
+
+
+--resurge
 project "Resurge"
     location "Resurge"
     kind "SharedLib"
@@ -23,6 +30,9 @@ project "Resurge"
 
     targetdir("bin/"..outputdir.."/%{prj.name}")
     objdir("bin-int/"..outputdir.."/%{prj.name}")
+
+    pchheader "rgpch.h"
+    pchsource "Resurge/src/rgpch.cpp"
 
     files
     { 
@@ -33,7 +43,14 @@ project "Resurge"
     includedirs
     {
         "%{prj.name}/src",
-        "%{prj.name}/vendor/spdlog/include"
+        "%{prj.name}/vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"
+    }
+
+    links
+    {
+        "GLFW",
+        "opengl32.lib"
     }
 
     filter"system:windows"
@@ -64,6 +81,7 @@ project "Resurge"
         defines "RG_Dist"
         optimize "On"
 
+--sandbos
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"

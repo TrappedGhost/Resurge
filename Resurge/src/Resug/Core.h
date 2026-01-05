@@ -10,6 +10,17 @@
 	#error only one.
 #endif // RG_PLATFORM_WINDOWS
 
+
+#ifdef RG_ENABLE_ASSERTS
+	#define RG_CLIENT_ASSERT(x, ...) { if(!(x)){HZ_CLIENT_ERROR("Assertion Failed: {0}",__VA_ARGS__);__debugbreak();}}	
+	#define RG_CORE_ASSERT(x, ...) { if(!(x)){HZ_CORE_ERROR("Assertion Failed: {0}",__VA_ARGS__);__debugbreak();}}	
+#else
+	#define RG_CLIENT_ASSERT(x,...)
+	#define RG_CORE_ASSERT(x,...)
+#endif // RG_ENABLE_ASSERTS
+
+
+
 #define BIT(x) (1<<x)
 #define uint unsigned int
 

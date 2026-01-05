@@ -1,3 +1,6 @@
 [submodule "Resurge/vendor/spdlog"]
 	path = Resurge/vendor/spdlog
 	url = https://ghfast.top/https://github.com/gabime/spdlog
+[submodule "Resurge/vendor/GLFW"]
+	path = Resurge/vendor/GLFW
+	url = http://github.com/TheCherno/glfw

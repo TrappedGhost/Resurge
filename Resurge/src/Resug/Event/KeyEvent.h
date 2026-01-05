@@ -2,8 +2,6 @@
 
 #include "Event.h"
 
-#include<sstream>
-
 namespace Resug
 {
 	//key event
