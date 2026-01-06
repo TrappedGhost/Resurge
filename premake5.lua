@@ -71,14 +71,17 @@ project "Resurge"
         }
     filter "configurations:Debug"
         defines "RG_DEBUG"
+        buildoptions "/MDd"
         symbols "On"
 
     filter "configurations:Release"
         defines "RG_RELEASE"
+        buildoptions "/MD"
         optimize "On"
 
     filter "configurations:Dist"
         defines "RG_Dist"
+        buildoptions "/MD"
         optimize "On"
 
 --sandbos
@@ -118,12 +121,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "RG_DEBUG"
+        buildoptions "/MDd"
         symbols "On"
 
     filter "configurations:Release"
         defines "RG_RELEASE"
+        buildoptions "/MD"
         optimize "On"
 
     filter "configurations:Dist"
         defines "RG_Dist"
+        buildoptions "/MD"
         optimize "On"

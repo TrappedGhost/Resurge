@@ -16,6 +16,8 @@ namespace Resug
 			std::stringstream ss;
 			ss << "MouseMove" << m_MouseX << " , " << m_MouseY;
 			return ss.str();
+		/*	std::string s = "sss";
+			return s;*/
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)

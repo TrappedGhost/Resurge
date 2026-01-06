@@ -162,6 +162,8 @@ copy /B /Y ..\bin\Dist-windows-x86_64\Resurge\Resurge.dll ..\bin\Dist-windows-x8
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Resug\LayerStack.h" />
+    <ClInclude Include="src\Resug\Layer.h" />
     <ClInclude Include="src\Resug.h" />
     <ClInclude Include="src\Resug\Application.h" />
     <ClInclude Include="src\Resug\Core.h" />
@@ -176,6 +178,8 @@ copy /B /Y ..\bin\Dist-windows-x86_64\Resurge\Resurge.dll ..\bin\Dist-windows-x8
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Resug\LayerStack.cpp" />
+    <ClCompile Include="src\Resug\Layer.cpp" />
     <ClCompile Include="src\Resug\Application.cpp" />
     <ClCompile Include="src\Resug\Log.cpp" />
     <ClCompile Include="src\rgpch.cpp">

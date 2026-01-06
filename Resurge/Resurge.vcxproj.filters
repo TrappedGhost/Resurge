@@ -37,6 +37,8 @@
     <ClInclude Include="src\rgpch.h" />
     <ClInclude Include="src\Resug\Window.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\Resug\Layer.h" />
+    <ClInclude Include="src\Resug\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Resug\Application.cpp">
@@ -47,5 +49,7 @@
     </ClCompile>
     <ClCompile Include="src\rgpch.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\Resug\Layer.cpp" />
+    <ClCompile Include="src\Resug\LayerStack.cpp" />
   </ItemGroup>
 </Project>
