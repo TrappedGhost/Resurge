@@ -19,8 +19,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 --include glfw
 IncludeDir = {}
 IncludeDir["GLFW"] = "Resurge/vendor/GLFW/include"
-include "Resurge/vendor/GLFW"
+IncludeDir["Glad"] = "Resurge/vendor/Glad/include"
 
+include "Resurge/vendor/GLFW"
+include "Resurge/vendor/Glad"
 
 --resurge
 project "Resurge"
@@ -44,12 +46,14 @@ project "Resurge"
     {
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}"        
     }
 
     links
     {
         "GLFW",
+        "Glad",
         "opengl32.lib"
     }
 
@@ -61,7 +65,8 @@ project "Resurge"
         defines
         {
             "RG_PLATFORM_WINDOWS",
-            "RG_BUILD_DLL"
+            "RG_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
 
         postbuildcommands

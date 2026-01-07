@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Resug/Window.h"
-#include <GLFW/glfw3.h>
 #include"Resug/Event/ApplicationEvent.h"
+#include <GLFW/glfw3.h>
+//struct GLFWwindow;
 
 namespace Resug
 {
