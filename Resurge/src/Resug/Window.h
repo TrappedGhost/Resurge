@@ -26,6 +26,7 @@ namespace Resug
 		virtual void OnUpdate() = 0;
 		virtual uint GetWidth() const = 0;
 		virtual uint GetHeight() const = 0;
+		virtual void* GetNativeWindow()const = 0;
 
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;

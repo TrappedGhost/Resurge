@@ -4,6 +4,9 @@
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\OpenGL">
+      <UniqueIdentifier>{1E7D2C1D-8A08-9AE1-9319-1DD6FF23F6E1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
     </Filter>
@@ -13,8 +16,14 @@
     <Filter Include="Resug\Event">
       <UniqueIdentifier>{FC19B8F4-68CF-30EA-F1C3-2AC15D7827EE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resug\ImGui">
+      <UniqueIdentifier>{D50DFBF4-41C3-73EA-CAB7-6DC1366C6AEE}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\ImGioOpenGLRender.h">
+      <Filter>Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -40,6 +49,9 @@
     <ClInclude Include="src\Resug\Event\MouseEvent.h">
       <Filter>Resug\Event</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\ImGui\ImGuiLayer.h">
+      <Filter>Resug\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Layer.h">
       <Filter>Resug</Filter>
     </ClInclude>
@@ -53,13 +65,23 @@
       <Filter>Resug</Filter>
     </ClInclude>
     <ClInclude Include="src\rgpch.h" />
+    <ClInclude Include="src\Resug\Input.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
+    <ClInclude Include="src\Resug\KeyCode.h" />
+    <ClInclude Include="src\Resug\MouseButtonCode.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\OpenGL\ImGioOpenGLRender.cpp">
+      <Filter>Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\Application.cpp">
       <Filter>Resug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\ImGui\ImGuiLayer.cpp">
+      <Filter>Resug\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\Layer.cpp">
       <Filter>Resug</Filter>
@@ -71,5 +93,6 @@
       <Filter>Resug</Filter>
     </ClCompile>
     <ClCompile Include="src\rgpch.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
 </Project>

@@ -30,7 +30,7 @@ namespace Resug
 	class RESUG_API MouseScrollEvent :public Event
 	{
 	public:
-		MouseScrollEvent(float xOffset, float yOffset) {}
+		MouseScrollEvent(float xOffset, float yOffset): m_XOffset(xOffset), m_YOffset(yOffset) {}
 		inline float GetXOffset() { return m_XOffset; }
 		inline float GetYOffset() { return m_YOffset; }
 		virtual std::string ToString() const override

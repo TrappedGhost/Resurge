@@ -4,7 +4,6 @@
 #include"Resug/Event/ApplicationEvent.h"
 #include <GLFW/glfw3.h>
 //struct GLFWwindow;
-
 namespace Resug
 {
 	class WindowsWindow : public Window
@@ -15,7 +14,7 @@ namespace Resug
 		virtual void OnUpdate() override;
 		virtual inline uint GetWidth()const override { return m_Data.Width; }
 		virtual inline uint GetHeight()const override { return m_Data.Heigth; }
-		
+		virtual inline void* GetNativeWindow()const override { return m_Window; }
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		virtual void SetVSync(bool enabled) override;
 		virtual bool IsVSync()const override;

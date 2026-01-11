@@ -2,6 +2,7 @@
 
 #include "Event.h"
 
+
 namespace Resug
 {
 	//key event
@@ -46,6 +47,20 @@ namespace Resug
 			return ss.str();
 		}
 		EVENT_CLASS_TYPE(KeyReleased)
+
+	};
+
+	class RESUG_API KeyTypedEvent : public KeyEvent
+	{
+	public:
+		KeyTypedEvent(int keycode) :KeyEvent(keycode) {}
+		virtual std::string ToString()const override
+		{
+			std::stringstream ss;
+			ss << "KeyTyped" << m_KeyCode;
+			return ss.str();
+		}
+		EVENT_CLASS_TYPE(KeyTyped)
 
 	};
 

@@ -11,7 +11,7 @@ namespace Resug
 		None = 0,
 		WindowClose, WindowResize, WindowFoucs, WindowLoseFoucs, WindowMoved,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased,
+		KeyPressed, KeyReleased,KeyTyped,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 	enum EventCategory

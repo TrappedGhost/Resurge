@@ -56,7 +56,6 @@ namespace Resug
 
 		SetVSync(true);
 
-		// set glfw shutdown
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -98,6 +97,12 @@ namespace Resug
 						break;
 					}
 				}				
+			});
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				KeyTypedEvent event(keycode);
+				data.EventCallback(event);
 			});
 
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)

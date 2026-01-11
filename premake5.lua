@@ -20,15 +20,19 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Resurge/vendor/GLFW/include"
 IncludeDir["Glad"] = "Resurge/vendor/Glad/include"
+IncludeDir["ImGui"] = "Resurge/vendor/imgui"
 
 include "Resurge/vendor/GLFW"
 include "Resurge/vendor/Glad"
+include "Resurge/vendor/imgui"
+
 
 --resurge
 project "Resurge"
     location "Resurge"
     kind "SharedLib"
     language "C++"
+    staticruntime "Off"
 
     targetdir("bin/"..outputdir.."/%{prj.name}")
     objdir("bin-int/"..outputdir.."/%{prj.name}")
@@ -47,19 +51,20 @@ project "Resurge"
         "%{prj.name}/src",
         "%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
-        "%{IncludeDir.Glad}"        
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}"
     }
 
     links
     {
         "GLFW",
         "Glad",
+        "ImGui",
         "opengl32.lib"
     }
 
     filter"system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -76,17 +81,17 @@ project "Resurge"
         }
     filter "configurations:Debug"
         defines "RG_DEBUG"
-        buildoptions "/MDd"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "RG_RELEASE"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
         defines "RG_Dist"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
 --sandbos
@@ -94,6 +99,8 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+    staticruntime "Off"
+
 
     targetdir("bin/"..outputdir.."/%{prj.name}")
     objdir("bin-int/"..outputdir.."/%{prj.name}")
@@ -116,7 +123,6 @@ project "Sandbox"
     }
     filter"system:windows"
         cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
 
         defines
@@ -126,15 +132,15 @@ project "Sandbox"
 
     filter "configurations:Debug"
         defines "RG_DEBUG"
-        buildoptions "/MDd"
+        runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
         defines "RG_RELEASE"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
         defines "RG_Dist"
-        buildoptions "/MD"
+        runtime "Release"
         optimize "On"

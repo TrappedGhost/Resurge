@@ -4,3 +4,6 @@
 [submodule "Resurge/vendor/GLFW"]
 	path = Resurge/vendor/GLFW
 	url = http://github.com/TheCherno/glfw
+[submodule "Resurge/vendor/imgui"]
+	path = Resurge/vendor/imgui
+	url = https://github.com/TheCherno/imgui
