@@ -21,6 +21,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Resurge/vendor/GLFW/include"
 IncludeDir["Glad"] = "Resurge/vendor/Glad/include"
 IncludeDir["ImGui"] = "Resurge/vendor/imgui"
+IncludeDir["glm"] = "Resurge/vendor/glm"
 
 include "Resurge/vendor/GLFW"
 include "Resurge/vendor/Glad"
@@ -30,9 +31,11 @@ include "Resurge/vendor/imgui"
 --resurge
 project "Resurge"
     location "Resurge"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
-    staticruntime "Off"
+    cppdialect "C++17"
+
+    staticruntime "on"
 
     targetdir("bin/"..outputdir.."/%{prj.name}")
     objdir("bin-int/"..outputdir.."/%{prj.name}")
@@ -43,7 +46,9 @@ project "Resurge"
     files
     { 
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/glm/glm/**.hpp",
+        "%{prj.name}/vendor/glm/glm/**.inl"
     }
 
     includedirs
@@ -52,7 +57,9 @@ project "Resurge"
         "%{prj.name}/vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
-        "%{IncludeDir.ImGui}"
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}"
+
     }
 
     links
@@ -63,8 +70,8 @@ project "Resurge"
         "opengl32.lib"
     }
 
+
     filter"system:windows"
-        cppdialect "C++17"
         systemversion "latest"
 
         defines
@@ -74,11 +81,6 @@ project "Resurge"
             "GLFW_INCLUDE_NONE"
         }
 
-        postbuildcommands
-        {
-            ("{MKDIR} ../bin/"..outputdir.."/Sandbox"),
-            ("{COPYFILE} %{cfg.buildtarget.relpath} ../bin/"..outputdir.."/Sandbox")
-        }
     filter "configurations:Debug"
         defines "RG_DEBUG"
         runtime "Debug"
@@ -99,7 +101,7 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
-    staticruntime "Off"
+    staticruntime "on"
 
 
     targetdir("bin/"..outputdir.."/%{prj.name}")
@@ -114,7 +116,9 @@ project "Sandbox"
     includedirs
     {
         "Resurge/vendor/spdlog/include",
-        "Resurge/src"
+        "Resurge/src",
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}"
     }
 
     links

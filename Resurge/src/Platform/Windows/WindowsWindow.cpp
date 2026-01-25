@@ -5,6 +5,8 @@
 #include"Resug/Event/ApplicationEvent.h"
 #include"Resug/Event/MouseEvent.h"
 
+#include"Platform/OpenGL/OpenGLContext.h"
+
 #include<glad/glad.h>
 
 
@@ -49,9 +51,12 @@ namespace Resug
 
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Heigth, m_Data.Title.c_str(), nullptr, nullptr);
 
-		glfwMakeContextCurrent(m_Window);
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
+
+		/*glfwMakeContextCurrent(m_Window);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		RG_CORE_ASSERT(status, "Failed to load glad");
+		RG_CORE_ASSERT(status, "Failed to load glad");*/
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
 		SetVSync(true);
@@ -154,7 +159,7 @@ namespace Resug
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 	void WindowsWindow::SetVSync(bool enabled)
 	{

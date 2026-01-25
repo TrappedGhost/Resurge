@@ -13,17 +13,11 @@ namespace Resug
 		~ImGuiLayer();
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnUpdate() override;
-		virtual void OnEvent(Event& event) override;
+		virtual void OnImGuiRender() override;
+
+		void Begin();
+		void End();
 	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& event);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& event);
-		bool OnMouseMoveEvent(MouseMoveEvent& event);
-		bool OnMouseScrollEvent(MouseScrollEvent& event);
-		bool OnKeyPressedEvent(KeyPressedEvent& event);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& event);
-		bool OnKeyTypedEvent(KeyTypedEvent& event);
-		bool OnWindowResizeEvent(WindowResizeEvent& event);
 		//variable
 		float m_Time = 0.0f;
 	};

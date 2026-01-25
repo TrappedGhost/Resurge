@@ -7,3 +7,6 @@
 [submodule "Resurge/vendor/imgui"]
 	path = Resurge/vendor/imgui
 	url = https://github.com/TheCherno/imgui
+[submodule "Resurge/vendor/glm"]
+	path = Resurge/vendor/glm
+	url = http://github.com/icaven/glm

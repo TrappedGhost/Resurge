@@ -1,6 +1,6 @@
 #include<Resug.h>
 
-
+#include"imgui.h"
 
 class ExampleLayer : public Resug::Layer
 {
@@ -19,8 +19,6 @@ public:
 	}
 	virtual void OnEvent(Resug::Event& event) override
 	{
-		//RG_CLIENT_TRACE("{0}", e.ToString());
-		//RG_CLIENT_TRACE("T is pressed");
 		if (event.GetEventType() == Resug::EventType::KeyPressed)
 		{
 			Resug::KeyPressedEvent& e = (Resug::KeyPressedEvent&)event;
@@ -29,6 +27,12 @@ public:
 				RG_CLIENT_TRACE("TAB is pressed");
 			}
 		}
+	}
+	virtual void OnImGuiRender() override
+	{
+		ImGui::Begin("Tesr");
+		ImGui::Text("Hello World");
+		ImGui::End();
 	}
 
 private:
@@ -42,7 +46,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverLayer(new Resug::ImGuiLayer());
+		//PushOverLayer(new Resug::ImGuiLayer());
 	}
 	~Sandbox(){}
 

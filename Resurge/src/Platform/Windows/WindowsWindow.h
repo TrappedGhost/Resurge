@@ -2,6 +2,7 @@
 
 #include "Resug/Window.h"
 #include"Resug/Event/ApplicationEvent.h"
+#include"Resug/Renderer/GraphicsContext.h"
 #include <GLFW/glfw3.h>
 //struct GLFWwindow;
 namespace Resug
@@ -25,6 +26,8 @@ namespace Resug
 
 
 		GLFWwindow* m_Window;
+		GraphicsContext* m_Context;
+
 		struct WindowData
 		{
 			std::string Title;

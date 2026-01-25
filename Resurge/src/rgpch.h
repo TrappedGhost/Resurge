@@ -10,6 +10,7 @@
 
 #include<string>
 #include<vector>
+#include <initializer_list>
 
 #ifdef RG_PLATFORM_WINDOWS
 	#include<Windows.h>

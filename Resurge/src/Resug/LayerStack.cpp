@@ -4,7 +4,6 @@ namespace Resug
 {
 	LayerStack::LayerStack()
 	{
-		m_LayerInsert = m_Layers.begin();
 	}
 	LayerStack::~LayerStack()
 	{
@@ -15,7 +14,8 @@ namespace Resug
 	}
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
+		m_Layers.emplace(m_Layers.begin(), layer);
+		m_LayerIndex++;
 	}
 
 	void LayerStack::PushOverLayer(Layer* overLayer)
@@ -29,7 +29,7 @@ namespace Resug
 		if (it != m_Layers.end())
 		{
 			m_Layers.erase(it);
-			m_LayerInsert--;
+			m_LayerIndex--;
 		}
 	}
 	void LayerStack::PopOverLayer(Layer* layer)
