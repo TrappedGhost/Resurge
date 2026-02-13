@@ -1,6 +1,6 @@
 #pragma once
-#include"Resug/Core.h"
-#include"Resug/Layer.h"
+#include"Resug/Core/Core.h"
+#include"Resug/Core/Layer.h"
 namespace Resug 
 {
 	class RESUG_API LayerStack

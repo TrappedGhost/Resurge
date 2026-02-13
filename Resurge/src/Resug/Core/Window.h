@@ -1,9 +1,9 @@
 #pragma once
 #include"rgpch.h"
 
-#include"Resug/Core.h"
-#include"Resug/Event//Event.h"
-#include"Resug/Log.h"
+#include"Resug/Core/Core.h"
+#include"Resug/Event/Event.h"
+#include"Resug/Core/Log.h"
 namespace Resug 
 {
 	struct WindowProps

@@ -1,5 +1,7 @@
 #pragma once
 
+#include<memory>
+
 #ifdef RG_PLATFORM_WINDOWS
 #if RG_DYNAMIC_LINK
 	#ifdef RG_BUILD_DLL
@@ -26,6 +28,20 @@
 
 
 #define BIT(x) (1<<x)
+
 typedef unsigned int uint;
 
-#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+#define RG_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+
+
+namespace Resug
+{
+	typedef unsigned int uint;
+	
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+}

@@ -11,6 +11,7 @@
 #include<string>
 #include<vector>
 #include <initializer_list>
+#include <unordered_map>
 
 #ifdef RG_PLATFORM_WINDOWS
 	#include<Windows.h>

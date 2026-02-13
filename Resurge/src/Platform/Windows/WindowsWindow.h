@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Resug/Window.h"
+#include "Resug/Core/Window.h"
 #include"Resug/Event/ApplicationEvent.h"
 #include"Resug/Renderer/GraphicsContext.h"
 #include <GLFW/glfw3.h>

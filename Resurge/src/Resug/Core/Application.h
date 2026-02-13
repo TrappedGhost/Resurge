@@ -2,9 +2,9 @@
 #include"Core.h"
 
 #include"Window.h" 
-#include "Event/Event.h"
-#include"Event/ApplicationEvent.h"
-#include"Event/MouseEvent.h"
+#include"Resug/Event/Event.h"
+#include"Resug/Event/ApplicationEvent.h"
+#include"Resug/Event/MouseEvent.h"
 #include"LayerStack.h"
 
 #include"Resug/Renderer/Shader.h"
@@ -31,20 +31,16 @@ namespace Resug {
 	private:
 
 		bool OnWindowClose(WindowCloseEvent& event);
+		bool OnWindowResize(WindowResizeEvent& event);
 		
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 
 		bool m_Running = true;
+		bool m_Minimized = false;
 		LayerStack m_LayerStack;
 
-		std::shared_ptr<Shader> m_Shader;
-		std::shared_ptr<VertexArray> m_VertexArray;
-
-		std::shared_ptr<Shader> m_BlueShader;
-		std::shared_ptr<VertexArray> m_SquareVA;
-
-		OrthographicCamera m_Camera;
+		float m_LastFrameTime;
 	private:
 		static Application* s_Instance;
 	};

@@ -1,6 +1,7 @@
 #pragma once
 
 #include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
 
 namespace Resug
 {
@@ -8,6 +9,8 @@ namespace Resug
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top);
+		void SetProjection(float left, float right, float bottom, float top);
+
 		void SetPosition(const glm::vec3& position) { m_Position = position; ReCalculateViewMatrix(); }
 		void SetRotation(float rotation) { m_Rotation = rotation; ReCalculateViewMatrix(); }
 

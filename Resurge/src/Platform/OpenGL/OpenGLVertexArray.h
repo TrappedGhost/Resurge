@@ -1,6 +1,6 @@
 #pragma once
 
-#include"Resug/Log.h"
+#include"Resug/Core/Log.h"
 
 #include"Resug/Renderer/VertexArray.h"
 namespace Resug

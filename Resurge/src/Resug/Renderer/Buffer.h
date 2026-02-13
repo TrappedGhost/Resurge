@@ -1,6 +1,6 @@
 #pragma once
-#include"Resug/Core.h"
-#include"Resug/Log.h"
+#include"Resug/Core/Core.h"
+#include"Resug/Core/Log.h"
 
 namespace Resug
 {

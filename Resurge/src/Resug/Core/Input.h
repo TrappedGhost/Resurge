@@ -1,7 +1,7 @@
 #pragma once
 #include"rgpch.h"
 
-#include "Resug/Core.h"
+#include "Resug/Core/Core.h"
 
 namespace Resug
 {

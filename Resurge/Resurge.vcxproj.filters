@@ -16,6 +16,9 @@
     <Filter Include="src\Resug">
       <UniqueIdentifier>{C242C1B3-2EAD-752A-77EB-26D0E394537F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Resug\Core">
+      <UniqueIdentifier>{5A70DCF0-463E-D0F6-2FD2-401D1B3FAC5B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Resug\Event">
       <UniqueIdentifier>{934D920C-FFD8-FFD0-08EA-82C574F45BD1}</UniqueIdentifier>
     </Filter>
@@ -46,12 +49,27 @@
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
@@ -63,14 +81,38 @@
     <ClInclude Include="src\Resug.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Application.h">
-      <Filter>src\Resug</Filter>
+    <ClInclude Include="src\Resug\Core\Application.h">
+      <Filter>src\Resug\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Core.h">
-      <Filter>src\Resug</Filter>
+    <ClInclude Include="src\Resug\Core\Core.h">
+      <Filter>src\Resug\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\EntryPoint.h">
-      <Filter>src\Resug</Filter>
+    <ClInclude Include="src\Resug\Core\EntryPoint.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\Input.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\KeyCode.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\Layer.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\LayerStack.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\Log.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\MouseButtonCode.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\Timestep.h">
+      <Filter>src\Resug\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Core\Window.h">
+      <Filter>src\Resug\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Resug\Event\ApplicationEvent.h">
       <Filter>src\Resug\Event</Filter>
@@ -87,38 +129,35 @@
     <ClInclude Include="src\Resug\ImGui\ImGuiLayer.h">
       <Filter>src\Resug\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Input.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resug\KeyCode.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resug\Layer.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resug\LayerStack.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resug\Log.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resug\MouseButtonCode.h">
-      <Filter>src\Resug</Filter>
-    </ClInclude>
     <ClInclude Include="src\Resug\Renderer\Buffer.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Resug\Renderer\GraphicsContext.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\OrthographicCamera.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\OrthographicCameraController.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Renderer\Renderer.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\RendererAPI.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\RendererCommand.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Resug\Renderer\Shader.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Window.h">
-      <Filter>src\Resug</Filter>
+    <ClInclude Include="src\Resug\Renderer\Texture.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\VertexArray.h">
+      <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\rgpch.h">
       <Filter>src</Filter>
@@ -1374,12 +1413,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
-    <ClInclude Include="src\Resug\Renderer\RendererAPI.h" />
-    <ClInclude Include="src\Resug\Renderer\RendererCommand.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
-    <ClInclude Include="src\Resug\Renderer\OrthographicCamera.h" />
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1388,14 +1424,35 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resug\Application.cpp">
-      <Filter>src\Resug</Filter>
+    <ClCompile Include="src\Resug\Core\Application.cpp">
+      <Filter>src\Resug\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Core\Layer.cpp">
+      <Filter>src\Resug\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Core\LayerStack.cpp">
+      <Filter>src\Resug\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Core\Log.cpp">
+      <Filter>src\Resug\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\ImGui\ImGuiLayer.cpp">
       <Filter>src\Resug\ImGui</Filter>
@@ -1403,32 +1460,38 @@
     <ClCompile Include="src\Resug\ImGui\ImguiBuild.cpp">
       <Filter>src\Resug\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resug\Layer.cpp">
-      <Filter>src\Resug</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Resug\LayerStack.cpp">
-      <Filter>src\Resug</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Resug\Log.cpp">
-      <Filter>src\Resug</Filter>
-    </ClCompile>
     <ClCompile Include="src\Resug\Renderer\Buffer.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\OrthographicCamera.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\OrthographicCameraController.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\Renderer\Renderer.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\RendererAPI.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\RendererCommand.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Resug\Renderer\Shader.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\Texture.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\VertexArray.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\rgpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resug\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="src\Resug\Renderer\RendererAPI.cpp" />
-    <ClCompile Include="src\Resug\Renderer\RendererCommand.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
-    <ClCompile Include="src\Resug\Renderer\OrthographicCamera.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

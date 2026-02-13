@@ -1,6 +1,6 @@
 #pragma once
-#include "Resug/Input.h"
-#include"Resug/Application.h"
+#include "Resug/Core/Input.h"
+#include"Resug/Core/Application.h"
 namespace Resug
 {
 	class WindowsInput : public Input

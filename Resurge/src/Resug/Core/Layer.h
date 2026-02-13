@@ -1,5 +1,6 @@
 #pragma once
-#include "Resug/Core.h"
+#include "Resug/Core/Core.h"
+#include"Resug/Core/Timestep.h"
 #include"Resug/Event/Event.h"
 namespace Resug
 {
@@ -11,7 +12,7 @@ namespace Resug
 
 		virtual void OnAttach(){}
 		virtual void OnDetach(){}
-		virtual void OnUpdate(){}
+		virtual void OnUpdate(Timestep& ts){}
 		virtual void OnImGuiRender(){} 
 		virtual void OnEvent(Event& event){}
 

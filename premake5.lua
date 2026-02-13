@@ -22,6 +22,7 @@ IncludeDir["GLFW"] = "Resurge/vendor/GLFW/include"
 IncludeDir["Glad"] = "Resurge/vendor/Glad/include"
 IncludeDir["ImGui"] = "Resurge/vendor/imgui"
 IncludeDir["glm"] = "Resurge/vendor/glm"
+IncludeDir["stb_image"] = "Resurge/vendor/stb_image"
 
 include "Resurge/vendor/GLFW"
 include "Resurge/vendor/Glad"
@@ -47,6 +48,8 @@ project "Resurge"
     { 
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp",
+        "%{prj.name}/vendor/stb_image/**.h",
+        "%{prj.name}/vendor/stb_image/**.cpp",
         "%{prj.name}/vendor/glm/glm/**.hpp",
         "%{prj.name}/vendor/glm/glm/**.inl"
     }
@@ -58,7 +61,8 @@ project "Resurge"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}"
 
     }
 
@@ -118,7 +122,8 @@ project "Sandbox"
         "Resurge/vendor/spdlog/include",
         "Resurge/src",
         "%{IncludeDir.ImGui}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}"
     }
 
     links

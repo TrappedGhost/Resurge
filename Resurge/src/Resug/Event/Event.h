@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Resug/Core.h"
+#include "Resug/Core/Core.h"
 
 #include"rgpch.h"
 
 namespace Resug
 {
+
 	enum class EventType
 	{
 		None = 0,

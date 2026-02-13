@@ -1,7 +1,7 @@
 #pragma once
 
-#include"Resug/Core.h"
-#include"Resug/Log.h"
+#include"Resug/Core/Core.h"
+#include"Resug/Core/Log.h"
 #include"Resug/Renderer/GraphicsContext.h"
  
 struct GLFWwindow;
