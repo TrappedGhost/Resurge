@@ -1,8 +1,9 @@
 #include"rgpch.h"
 #include"Resug/Renderer/Renderer.h"
-
+#include"Renderer2D.h"
 #include<glm/glm.hpp>
 #include"Platform/OpenGL/OpenGLShader.h"
+#include "Renderer.h"
 
 
 namespace Resug
@@ -12,6 +13,7 @@ namespace Resug
 	void Renderer::Init()
 	{
 		RendererCommand::Init();
+		Renderer2D::Init();
 	}
 
 	void Renderer::WindowResize(uint32_t width, uint32_t height)
@@ -23,7 +25,6 @@ namespace Resug
 	{
 		m_sceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 		glm::mat4 m = m_sceneData->ViewProjectionMatrix;
-		RG_CORE_WARN("{0},{1},{2},{3}", m[0][0], m[0][1], m[0][2], m[0][3]);
 	}
 	void Renderer::EndScene()
 	{

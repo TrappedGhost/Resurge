@@ -17,6 +17,7 @@
 //Renderer---------------------
 #include"Resug/Renderer/Buffer.h"
 #include"Resug/Renderer/Renderer.h"
+#include"Resug/Renderer/Renderer2D.h"
 #include"Resug/Renderer/RendererAPI.h"
 #include"Resug/Renderer/VertexArray.h"
 #include"Resug/Renderer/GraphicsContext.h"
@@ -27,5 +28,4 @@
 
 
 //EntryPoint------------------
-#include"Resug/Core/EntryPoint.h"
 //---------------------------

@@ -1,9 +1,13 @@
 #include<Resug.h>
 
+#include"Resug/Core/EntryPoint.h"
+
 #include"imgui.h"
 
 #include"Platform/OpenGL/OpenGLShader.h"
 #include"glm/gtc/type_ptr.hpp"
+
+#include"Sandbox2D.h"
 
 class ExampleLayer : public Resug::Layer
 {
@@ -17,7 +21,7 @@ public:
 	virtual void OnAttach()override
 	{
 		RG_CLIENT_INFO("Example Layer Attach!");
-		m_VertexArray.reset(Resug::VertexArray::Create());
+		m_VertexArray = (Resug::VertexArray::Create());
 
 		float vertices[3 * 7] =
 		{
@@ -47,7 +51,7 @@ public:
 		//---------------------------------------------
 		//Square
 
-		m_SquareVA.reset(Resug::VertexArray::Create());
+		m_SquareVA = (Resug::VertexArray::Create());
 		float squareVertices[4 * 5] =
 		{
 			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -211,7 +215,8 @@ class Sandbox : public Resug::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		//PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox2D());
 		//PushOverLayer(new Resug::ImGuiLayer());
 	}
 	~Sandbox(){}

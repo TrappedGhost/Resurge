@@ -49,7 +49,6 @@ namespace Resug
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
 		
-		RG_CORE_WARN("{0},{1}", m_AspectRatio, m_ZoomLevel);
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;

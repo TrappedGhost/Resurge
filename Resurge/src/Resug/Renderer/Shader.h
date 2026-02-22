@@ -15,6 +15,13 @@ namespace Resug
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
 
+		virtual void UploadMat3(const std::string name, const glm::mat3& value) = 0;
+		virtual void UploadMat4(const std::string name, const glm::mat4& value) = 0;
+		virtual void UploadFloat2(const std::string name, const glm::vec2& value) = 0;
+		virtual void UploadFloat3(const std::string name, const glm::vec3& value) = 0;
+		virtual void UploadFloat4(const std::string name, const glm::vec4& value) = 0;
+		virtual void UploadInt(const std::string name, const uint value) = 0;
+
 		virtual const std::string& GetName() const = 0;
 
 		static Ref<Shader> Create(const std::string& name, const std::string& filepath);

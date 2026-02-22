@@ -47,6 +47,36 @@ namespace Resug
 		glUseProgram(0);
 	}
 
+	void OpenGLShader::UploadInt(const std::string name, const uint value)
+	{
+		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::UploadMat3(const std::string name, const glm::mat3& value)
+	{
+		UploadUniformMat3( name, value);
+	}
+
+	void OpenGLShader::UploadMat4(const std::string name, const glm::mat4& value)
+	{
+		UploadUniformMat4(name, value);
+	}
+
+	void OpenGLShader::UploadFloat2(const std::string name, const glm::vec2& value)
+	{
+		UploadUniformFloat2(name, value);
+	}
+
+	void OpenGLShader::UploadFloat3(const std::string name, const glm::vec3& value)
+	{
+		UploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::UploadFloat4(const std::string name, const glm::vec4& value)
+	{
+		UploadUniformFloat4(name, value);
+	}
+
 	
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath)
