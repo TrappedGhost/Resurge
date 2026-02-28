@@ -40,8 +40,15 @@ namespace Resug
 		glBindVertexArray(0);
 	}
 
+	void OpenGLVertexArray::SetData(const void* data, uint32_t size) const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+	}
+
 	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
+		RG_PROFILE_FUNCTION();
 		
 		RG_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "The VertexBuffer have no layout");
 

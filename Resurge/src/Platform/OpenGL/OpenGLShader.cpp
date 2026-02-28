@@ -47,9 +47,14 @@ namespace Resug
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::UploadInt(const std::string name, const uint value)
+	void OpenGLShader::UploadInt(const std::string name, const int32_t value)
 	{
 		UploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::UploadIntArray(const std::string name, const int32_t* value, const uint count)
+	{
+		UploadUniformIntArray(name, value, count);
 	}
 
 	void OpenGLShader::UploadMat3(const std::string name, const glm::mat3& value)
@@ -60,6 +65,11 @@ namespace Resug
 	void OpenGLShader::UploadMat4(const std::string name, const glm::mat4& value)
 	{
 		UploadUniformMat4(name, value);
+	}
+
+	void OpenGLShader::UploadFloat(const std::string name, const float value)
+	{
+		UploadUniformFloat(name, value);
 	}
 
 	void OpenGLShader::UploadFloat2(const std::string name, const glm::vec2& value)
@@ -187,10 +197,16 @@ namespace Resug
 	}
 
 
-	void OpenGLShader::UploadUniformInt(const std::string name, const int value)
+	void OpenGLShader::UploadUniformInt(const std::string name, const int32_t value)
 	{
 		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
-		glUniform1f(location, value);
+		glUniform1i(location, value);
+		
+	}
+	void OpenGLShader::UploadUniformIntArray(const std::string name, const int32_t* value, const uint count)
+	{
+		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1iv(location,count, value);
 	}
 	void OpenGLShader::UploadUniformFloat(const std::string name, const float value)
 	{

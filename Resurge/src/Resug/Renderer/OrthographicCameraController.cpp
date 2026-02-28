@@ -43,6 +43,7 @@ namespace Resug
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrollEvent& e)
 	{
 		m_ZoomLevel -= e.GetYOffset();
+		RG_CORE_INFO("zoomlevel:{0}", m_ZoomLevel),
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}

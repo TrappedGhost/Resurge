@@ -16,6 +16,8 @@ namespace Resug
 
 	Application::Application()
 	{
+		RG_PROFILE_FUNCTION();
+
 		RG_CORE_ASSERT(!s_Instance, "applicaion has have");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -34,12 +36,14 @@ namespace Resug
 
 	void Application::PushLayer(Layer* layer)
 	{
+		RG_PROFILE_FUNCTION();
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverLayer(Layer* overLayer)
 	{
+		RG_PROFILE_FUNCTION();
 		m_LayerStack.PushOverLayer(overLayer);
 		overLayer->OnAttach();
 	}

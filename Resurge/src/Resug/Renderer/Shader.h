@@ -17,10 +17,12 @@ namespace Resug
 
 		virtual void UploadMat3(const std::string name, const glm::mat3& value) = 0;
 		virtual void UploadMat4(const std::string name, const glm::mat4& value) = 0;
+		virtual void UploadFloat(const std::string name, const float value) = 0;
 		virtual void UploadFloat2(const std::string name, const glm::vec2& value) = 0;
 		virtual void UploadFloat3(const std::string name, const glm::vec3& value) = 0;
 		virtual void UploadFloat4(const std::string name, const glm::vec4& value) = 0;
-		virtual void UploadInt(const std::string name, const uint value) = 0;
+		virtual void UploadInt(const std::string name, const int32_t value) = 0;
+		virtual void UploadIntArray(const std::string name, const int32_t* value, const uint count) = 0;
 
 		virtual const std::string& GetName() const = 0;
 

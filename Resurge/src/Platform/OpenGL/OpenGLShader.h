@@ -16,9 +16,13 @@ namespace Resug
 		virtual void Bind() const override;
 		virtual void UnBind() const override;
 
-		virtual void UploadInt(const std::string name, const uint value) override;
+		virtual void UploadInt(const std::string name, const int32_t value) override;
+		virtual void UploadIntArray(const std::string name, const int32_t* value, const uint count) override;
+
 		virtual void UploadMat3(const std::string name, const glm::mat3& value) override;
 		virtual void UploadMat4(const std::string name, const glm::mat4& value) override;
+		virtual void UploadFloat(const std::string name, const float value) override;
+
 		virtual void UploadFloat2(const std::string name, const glm::vec2& value) override;
 		virtual void UploadFloat3(const std::string name, const glm::vec3& value) override;
 		virtual void UploadFloat4(const std::string name, const glm::vec4& value) override;
@@ -26,6 +30,8 @@ namespace Resug
 		virtual const std::string& GetName() const override { return m_Name; }
 
 		void UploadUniformInt(const std::string name, const int value);
+		void UploadUniformIntArray(const std::string name, const int32_t* value, const uint count);
+
 
 		void UploadUniformFloat(const std::string name, const float value);
 		void UploadUniformFloat2(const std::string name, const glm::vec2& value);

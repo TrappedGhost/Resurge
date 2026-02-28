@@ -13,6 +13,9 @@ namespace Resug
 		virtual void Bind()const override;
 		virtual void UnBind()const override;
 
+		virtual void SetData(const void* data, uint32_t size)const  override;
+
+
 		virtual void AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) override;
 		virtual void SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) override;
 

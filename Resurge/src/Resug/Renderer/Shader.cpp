@@ -8,6 +8,8 @@ namespace Resug
 {
 	Ref<Shader> Shader::Create(const std::string& name, const std::string& filepath)
 	{
+		RG_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: RG_CORE_ASSERT(false, "RendererAPI: None is not sipport!"); return nullptr;
@@ -16,6 +18,7 @@ namespace Resug
 		RG_CORE_ASSERT(false, "Unknown RendererAPI");
 		return nullptr;
 	}
+	
 	Ref<Shader> Shader::Create(const std::string& name, const std::string vertexSrc, const std::string fragmentSrc)
 	{
 		switch (Renderer::GetAPI())

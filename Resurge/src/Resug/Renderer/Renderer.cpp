@@ -12,6 +12,7 @@ namespace Resug
 
 	void Renderer::Init()
 	{
+		RG_PROFILE_FUNCTION();
 		RendererCommand::Init();
 		Renderer2D::Init();
 	}
@@ -23,12 +24,13 @@ namespace Resug
 
 	void Renderer::BeginScene(OrthographicCamera& camera)
 	{
+		RG_PROFILE_FUNCTION();
 		m_sceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 		glm::mat4 m = m_sceneData->ViewProjectionMatrix;
 	}
 	void Renderer::EndScene()
 	{
-
+		RG_PROFILE_FUNCTION();
 	}
 	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4 transform)
 	{

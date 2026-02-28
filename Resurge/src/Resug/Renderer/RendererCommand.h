@@ -9,6 +9,7 @@ namespace Resug
 	public:
 		inline static void Init()
 		{
+			RG_PROFILE_FUNCTION();
 			s_RendererAPI->Init();
 		}
 
@@ -25,9 +26,9 @@ namespace Resug
 			s_RendererAPI->Clear();
 		}
 
-		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray)
+		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray,const uint32_t count = 0)
 		{
-			s_RendererAPI->DrawIndexed(vertexArray);
+			s_RendererAPI->DrawIndexed(vertexArray, count);
 		}
 	private:
 		static RendererAPI* s_RendererAPI;

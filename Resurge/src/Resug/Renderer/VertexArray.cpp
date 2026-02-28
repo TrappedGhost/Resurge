@@ -7,6 +7,8 @@ namespace Resug
 {
 	Ref<VertexArray> VertexArray::Create()
 	{
+		RG_PROFILE_FUNCTION();
+
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None: RG_CORE_ASSERT(false, "RendererAPI: None is not sipport!"); return nullptr;

@@ -21,6 +21,8 @@ namespace Resug
 
 	Window* Window::Create(const WindowProps& props)
 	{
+		RG_PROFILE_FUNCTION();
+
 		return new WindowsWindow(props);
 	}
 
@@ -35,6 +37,8 @@ namespace Resug
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		RG_PROFILE_FUNCTION();
+
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Heigth = props.Height;
@@ -43,14 +47,19 @@ namespace Resug
 
 		if (!s_GLFWInitialized)
 		{
+			RG_PROFILE_SCOPE("glfwInit ");
+
 			int success = glfwInit();
 			glfwSetErrorCallback(GLFWErrorCallback);
 			RG_CORE_ASSERT(success, "Could not intialize glfw");
 			s_GLFWInitialized = true;
 		}
 
-		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Heigth, m_Data.Title.c_str(), nullptr, nullptr);
+		{
+			RG_PROFILE_SCOPE("glfwCreateWindow ");
 
+			m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Heigth, m_Data.Title.c_str(), nullptr, nullptr);
+		}
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
 

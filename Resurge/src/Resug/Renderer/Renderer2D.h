@@ -18,20 +18,30 @@ namespace Resug
 
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
+		static void Flush();
+		static void FlushAndReset();
 
 		static void DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 color);
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 color);
-		static void DrawQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture);
-		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture);
+		static void DrawQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
-	private:
-		struct SceneData
+		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size,float rotation, glm::vec4 color);
+		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size,float rotation, glm::vec4 color);
+		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size,float rotation, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size,float rotation, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+
+		//Stats;
+		struct Statistics
 		{
-			glm::mat4 ViewProjectionMatrix;
+			uint32_t DrawCalls = 0;
+			uint32_t QuadCount = 0;
+			uint32_t GetTotalVertexCount() { return QuadCount * 4; }
+			uint32_t GetTotalIndexCount() { return QuadCount * 6; }
 		};
 
-		static SceneData* m_sceneData;
-		Ref<Texture2D> m_WhiteTexture;
+		static Statistics GetStats();
+		static void ResetStats();
 
 	};
 }
