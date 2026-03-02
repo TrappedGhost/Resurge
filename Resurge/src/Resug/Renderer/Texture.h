@@ -11,6 +11,7 @@ namespace Resug
 	public:
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
+		virtual uint32_t GetRendererID() const = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
 		

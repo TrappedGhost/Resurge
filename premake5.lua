@@ -153,3 +153,58 @@ project "Sandbox"
         defines "RG_Dist"
         runtime "Release"
         optimize "On"
+
+
+--Resug-Editor
+project "Resug-Editor"
+    location "Resug-Editor"
+    kind "ConsoleApp"
+    language "C++"
+    staticruntime "on"
+
+
+    targetdir("bin/"..outputdir.."/%{prj.name}")
+    objdir("bin-int/"..outputdir.."/%{prj.name}")
+
+    files
+    {
+        "%{prj.name}/src/**.h",
+        "%{prj.name}/src/**.cpp"
+    }
+
+    includedirs
+    {
+        "Resurge/vendor/spdlog/include",
+        "Resurge/src",
+        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb_image}"
+    }
+
+    links
+    {
+        "Resurge"
+    }
+    filter"system:windows"
+        cppdialect "C++17"
+        systemversion "latest"
+
+        defines
+        {
+            "RG_PLATFORM_WINDOWS"
+        }
+
+    filter "configurations:Debug"
+        defines "RG_DEBUG"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        defines "RG_RELEASE"
+        runtime "Release"
+        optimize "On"
+
+    filter "configurations:Dist"
+        defines "RG_Dist"
+        runtime "Release"
+        optimize "On"

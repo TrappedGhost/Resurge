@@ -24,6 +24,8 @@ private:
 	Resug::Ref<Resug::VertexArray> m_SquareVA;
 
 	Resug::Ref<Resug::Texture2D> m_Texture;
+	Resug::Ref<Resug::SubTexture2D> m_TextureInterface;
+	Resug::Ref<Resug::FrameBuffer> m_FrameBuffer;
 
 	glm::vec4 m_SquareColor = { 0.2f,0.3f,0.0f,1.0f };
 

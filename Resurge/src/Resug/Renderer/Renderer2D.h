@@ -5,6 +5,7 @@
 #include"Shader.h"
 #include"RendererAPI.h"
 #include"Texture.h"
+#include"SubTexture.h"
 
 namespace Resug
 {
@@ -25,11 +26,15 @@ namespace Resug
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 color);
 		static void DrawQuad(glm::vec2 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawQuad(glm::vec2 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size,float rotation, glm::vec4 color);
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size,float rotation, glm::vec4 color);
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size,float rotation, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size,float rotation, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size, float rotation, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 
 		//Stats;
 		struct Statistics

@@ -23,6 +23,8 @@
 #include"Resug/Renderer/GraphicsContext.h"
 #include"Resug/Renderer/Shader.h"
 #include"Resug/Renderer/Texture.h"
+#include"Resug/Renderer/SubTexture.h"
+#include"Resug/Renderer/FrameBuffer.h"
 #include"Resug/Renderer/OrthographicCamera.h" 
 //-----------------------------
 
