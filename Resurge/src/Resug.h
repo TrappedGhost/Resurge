@@ -25,8 +25,15 @@
 #include"Resug/Renderer/Texture.h"
 #include"Resug/Renderer/SubTexture.h"
 #include"Resug/Renderer/FrameBuffer.h"
+#include"Resug/Renderer/Camera.h" 
 #include"Resug/Renderer/OrthographicCamera.h" 
 //-----------------------------
+
+#include"Resug/Scene/Scene.h"
+#include"Resug/Scene/Entity.h"
+#include"Resug/Scene/ScriptableEntity.h"
+#include"Resug/Scene/Components.h"
+#include"Resug/Scene/Serializer.h"
 
 
 //EntryPoint------------------

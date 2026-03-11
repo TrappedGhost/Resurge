@@ -26,6 +26,11 @@ namespace Resug
 			s_RendererAPI->Clear();
 		}
 
+		inline static void Flush()
+		{
+			s_RendererAPI->Flush();
+		}
+
 		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray,const uint32_t count = 0)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray, count);

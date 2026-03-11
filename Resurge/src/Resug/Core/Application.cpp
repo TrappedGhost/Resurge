@@ -94,6 +94,11 @@ namespace Resug
 		}
 	}
 
+	void Application::Close()
+	{
+
+	}
+
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		m_Running = false;

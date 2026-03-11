@@ -54,6 +54,16 @@ namespace Resug
 		ImGui::DestroyContext();
 	}
 
+	void ImGuiLayer::OnEvent(Event& event)
+	{
+		if (m_blackEvent)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			event.Handled |= event.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			event.Handled |= event.IsInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
+	}
+
 	void ImGuiLayer::Begin()
 	{
 		ImGui_ImplOpenGL3_NewFrame();
@@ -79,6 +89,10 @@ namespace Resug
 			glfwMakeContextCurrent(backup_current_context);
 
 		}
+	}
+	void ImGuiLayer::BlackEvent(bool black)
+	{
+		m_blackEvent = black;
 	}
 	void ImGuiLayer::OnImGuiRender()
 	{

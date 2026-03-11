@@ -19,6 +19,9 @@
     <Filter Include="src\Resug\Core">
       <UniqueIdentifier>{5A70DCF0-463E-D0F6-2FD2-401D1B3FAC5B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Resug\Debug">
+      <UniqueIdentifier>{B8D6760C-2462-E4D0-2D73-67C5997D40D1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Resug\Event">
       <UniqueIdentifier>{934D920C-FFD8-FFD0-08EA-82C574F45BD1}</UniqueIdentifier>
     </Filter>
@@ -27,6 +30,9 @@
     </Filter>
     <Filter Include="src\Resug\Renderer">
       <UniqueIdentifier>{A8C0D8BC-94A4-9912-FD04-9465E9078494}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Resug\Scene">
+      <UniqueIdentifier>{5F39850D-CBC4-F2D1-D4D5-75C640E04ED2}</UniqueIdentifier>
     </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
@@ -60,6 +66,9 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
@@ -71,9 +80,6 @@
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\Windows\WindowsInput.h">
-      <Filter>src\Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
@@ -114,6 +120,9 @@
     <ClInclude Include="src\Resug\Core\Window.h">
       <Filter>src\Resug\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Debug\Instrumentor.h">
+      <Filter>src\Resug\Debug</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Event\ApplicationEvent.h">
       <Filter>src\Resug\Event</Filter>
     </ClInclude>
@@ -132,6 +141,12 @@
     <ClInclude Include="src\Resug\Renderer\Buffer.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\Camera.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\FrameBuffer.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Renderer\GraphicsContext.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
@@ -144,13 +159,22 @@
     <ClInclude Include="src\Resug\Renderer\Renderer.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\Renderer2D.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Renderer\RendererAPI.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Resug\Renderer\RendererCommand.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\SceneCamera.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Resug\Renderer\Shader.h">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Renderer\SubTexture.h">
       <Filter>src\Resug\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Resug\Renderer\Texture.h">
@@ -158,6 +182,21 @@
     </ClInclude>
     <ClInclude Include="src\Resug\Renderer\VertexArray.h">
       <Filter>src\Resug\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Scene\Components.h">
+      <Filter>src\Resug\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Scene\Entity.h">
+      <Filter>src\Resug\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Scene\Scene.h">
+      <Filter>src\Resug\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Scene\ScriptableEntity.h">
+      <Filter>src\Resug\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resug\Scene\Serializer.h">
+      <Filter>src\Resug\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\rgpch.h">
       <Filter>src</Filter>
@@ -1416,17 +1455,17 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Resug\Renderer\Renderer2D.h" />
-    <ClInclude Include="src\Resug\Debug\Instrumentor.h" />
-    <ClInclude Include="src\Resug\Renderer\SubTexture.h" />
-    <ClInclude Include="src\Resug\Renderer\FrameBuffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLFrameBuffer.h" />
+    <ClInclude Include="src\Resug\Util\FileUtil.h" />
+    <ClInclude Include="src\Resug\Debug\Operator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
@@ -1468,6 +1507,9 @@
     <ClCompile Include="src\Resug\Renderer\Buffer.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\FrameBuffer.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Resug\Renderer\OrthographicCamera.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
@@ -1477,13 +1519,22 @@
     <ClCompile Include="src\Resug\Renderer\Renderer.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\Renderer2D.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Resug\Renderer\RendererAPI.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\Renderer\RendererCommand.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\SceneCamera.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Resug\Renderer\Shader.cpp">
+      <Filter>src\Resug\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Renderer\SubTexture.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Resug\Renderer\Texture.cpp">
@@ -1492,15 +1543,21 @@
     <ClCompile Include="src\Resug\Renderer\VertexArray.cpp">
       <Filter>src\Resug\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resug\Scene\Entity.cpp">
+      <Filter>src\Resug\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Scene\Scene.cpp">
+      <Filter>src\Resug\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resug\Scene\Serializer.cpp">
+      <Filter>src\Resug\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\rgpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Resug\Renderer\Renderer2D.cpp" />
-    <ClCompile Include="src\Resug\Renderer\SubTexture.cpp" />
-    <ClCompile Include="src\Resug\Renderer\FrameBuffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLFrameBuffer.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsFileUtil.cpp" />
   </ItemGroup>
 </Project>

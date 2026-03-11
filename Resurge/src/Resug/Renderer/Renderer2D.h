@@ -1,6 +1,7 @@
 #pragma once
 
 #include"Resug/Core/Core.h"
+#include"Camera.h"
 #include"OrthographicCamera.h"
 #include"Shader.h"
 #include"RendererAPI.h"
@@ -17,6 +18,8 @@ namespace Resug
 
 		static void WindowResize(uint32_t width, uint32_t height);
 
+		static void BeginScene(Camera& camera, glm::mat4 transform);
+		static void BeginScene(glm::mat4 projection, glm::mat4 transform);
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 		static void Flush();
@@ -28,6 +31,12 @@ namespace Resug
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawQuad(glm::vec2 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
 		static void DrawQuad(glm::vec3 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+
+		static void DrawQuad(glm::mat4 transform, glm::vec4 color);
+		static void DrawQuad(glm::mat4 transform, Ref<Texture2D> texture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		static void DrawQuad(glm::mat4 transform, Ref<SubTexture2D> subTexture, float texZoomLevel = 1.0f, glm::vec4 tintColor = glm::vec4(1.0f));
+		
+		//TODO : do mat4 DrawQuad Function...
 
 		static void DrawRotatedQuad(glm::vec2 position, glm::vec2 size,float rotation, glm::vec4 color);
 		static void DrawRotatedQuad(glm::vec3 position, glm::vec2 size,float rotation, glm::vec4 color);

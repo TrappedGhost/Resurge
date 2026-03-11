@@ -32,6 +32,11 @@ void Resug::OpenGLRendererAPI::Clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void Resug::OpenGLRendererAPI::Flush()
+{
+	glFlush();
+}
+
 void Resug::OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const uint32_t count)
 {
 	RG_PROFILE_FUNCTION();

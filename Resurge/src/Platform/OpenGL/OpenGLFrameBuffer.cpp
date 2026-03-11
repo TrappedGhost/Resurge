@@ -17,6 +17,12 @@ namespace Resug
 
 	void OpenGLFrameBuffer::Invalidate()
 	{
+		if (m_RendererID)
+		{
+			glDeleteFramebuffers(1, &m_RendererID);
+			glDeleteTextures(1, &m_ColorAttachment);
+			glDeleteTextures(1, &m_DepthAttachment);
+		}
 		glCreateFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
@@ -43,10 +49,17 @@ namespace Resug
 	void OpenGLFrameBuffer::Bind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+		glViewport(0, 0, m_Spec.Width, m_Spec.Height);
 	}
 	void OpenGLFrameBuffer::UnBind() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	}
+	void OpenGLFrameBuffer::Resize(uint32_t width, uint32_t height) 
+	{
+		m_Spec.Width = width;
+		m_Spec.Height = height;
+		Invalidate();
 	}
 }

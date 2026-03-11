@@ -13,12 +13,17 @@ namespace Resug
 		~ImGuiLayer();
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
+		virtual void OnEvent(Event& event) override;
 		virtual void OnImGuiRender() override;
 
 		void Begin();
 		void End();
+
+		void BlackEvent(bool black);
+
 	private:
 		//variable
 		float m_Time = 0.0f;
+		bool m_blackEvent = true;
 	};
 }

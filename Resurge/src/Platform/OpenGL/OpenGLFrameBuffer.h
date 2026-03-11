@@ -12,7 +12,8 @@ namespace Resug
 		void Invalidate();
 		virtual void Bind()const override;
 		virtual void UnBind()const override;
-		
+		virtual void Resize(uint32_t width, uint32_t height) override;
+
 		virtual const FrameBufferSrecification& GetSpecification() const override { return m_Spec; };
 
 		virtual uint32_t GetRendererID() override { return m_RendererID; };

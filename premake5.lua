@@ -23,10 +23,14 @@ IncludeDir["Glad"] = "Resurge/vendor/Glad/include"
 IncludeDir["ImGui"] = "Resurge/vendor/imgui"
 IncludeDir["glm"] = "Resurge/vendor/glm"
 IncludeDir["stb_image"] = "Resurge/vendor/stb_image"
+IncludeDir["entt"] = "Resurge/vendor/entt/include"
+IncludeDir["yaml_cpp"] = "Resurge/vendor/yaml-cpp/include"
+
 
 include "Resurge/vendor/GLFW"
 include "Resurge/vendor/Glad"
 include "Resurge/vendor/imgui"
+include "Resurge/vendor/yaml-cpp"
 
 
 --resurge
@@ -62,8 +66,9 @@ project "Resurge"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}"
-
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links
@@ -71,6 +76,7 @@ project "Resurge"
         "GLFW",
         "Glad",
         "ImGui",
+        "yaml-cpp",
         "opengl32.lib"
     }
 
@@ -82,7 +88,8 @@ project "Resurge"
         {
             "RG_PLATFORM_WINDOWS",
             "RG_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
+            "GLFW_INCLUDE_NONE",
+            "YAML_CPP_STATIC_DEFINE"
         }
 
     filter "configurations:Debug"
@@ -123,7 +130,9 @@ project "Sandbox"
         "Resurge/src",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links
@@ -155,9 +164,9 @@ project "Sandbox"
         optimize "On"
 
 
---Resug-Editor
-project "Resug-Editor"
-    location "Resug-Editor"
+--Resurge-Editor
+project "Resurge-Editor"
+    location "Resurge-Editor"
     kind "ConsoleApp"
     language "C++"
     staticruntime "on"
@@ -178,7 +187,10 @@ project "Resug-Editor"
         "Resurge/src",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb_image}"
+        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.entt}",
+        "%{IncludeDir.yaml_cpp}"
+
     }
 
     links
@@ -191,7 +203,8 @@ project "Resug-Editor"
 
         defines
         {
-            "RG_PLATFORM_WINDOWS"
+            "RG_PLATFORM_WINDOWS",
+            "YAML_CPP_STATIC_DEFINE"
         }
 
     filter "configurations:Debug"

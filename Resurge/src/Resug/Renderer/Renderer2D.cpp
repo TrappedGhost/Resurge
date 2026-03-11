@@ -106,6 +106,29 @@ namespace Resug
 	void Renderer2D::WindowResize(uint32_t width, uint32_t height)
 	{
 	}
+	void Renderer2D::BeginScene(Camera& camera, glm::mat4 transform)
+	{
+		RG_PROFILE_FUNCTION();
+		glm::mat4 ViewProj = camera.GetProjection() * glm::inverse(transform);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadMat4("u_ViewProjection", ViewProj);
+
+		s_Data.IndicesCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.TextureSlotsIndex = 1;
+	}
+	void Renderer2D::BeginScene(glm::mat4 projection, glm::mat4 transform)
+	{
+		RG_PROFILE_FUNCTION();
+		//std::cout << transform[3][0] << "\n";
+		glm::mat4 ViewProj = projection * glm::inverse(transform);
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadMat4("u_ViewProjection", ViewProj);
+
+		s_Data.IndicesCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		s_Data.TextureSlotsIndex = 1;
+	}
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
 	{
 		RG_PROFILE_FUNCTION();
@@ -148,55 +171,12 @@ namespace Resug
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, glm::vec4 color)
 	{
 		RG_PROFILE_FUNCTION();
-		
-		if (s_Data.Stats.QuadCount >= s_Data.MaxQuads)
-		{
-			FlushAndReset();
-		}
-
-		float texIndex = 0.0f;
-		float texZoomLevel = 1.0f;
-		glm::vec2 texCoords[4] = {
-			{0.0f,0.0f},
-			{0.0f,0.0f},
-			{0.0f,0.0f},
-			{0.0f,0.0f } };
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), { 0.0f,0.0f,1.0f })
 			* glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = {0.0f,0.0f};
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-\
-		s_Data.IndicesCount+=6;
-
-		s_Data.Stats.QuadCount++;
+		DrawQuad(transform, color);
 
 	}
 
@@ -207,67 +187,12 @@ namespace Resug
 	void Renderer2D::DrawQuad(glm::vec3 position, glm::vec2 size, Ref<Texture2D> texture, float texZoomLevel, glm::vec4 tintColor)
 	{
 		RG_PROFILE_FUNCTION();
-		if (s_Data.Stats.QuadCount >= s_Data.MaxQuads)
-		{
-			FlushAndReset();
-		}
-
-		glm::vec4 color = tintColor;
-		glm::vec2 texCoords[4] = { 
-			{0.0f,0.0f},
-			{1.0f,0.0f},
-			{1.0f,1.0f},
-			{0.0f,1.0f } };
-
-		float texIndex = 0.0f;
-		for (int i = 1; i < s_Data.TextureSlotsIndex; i++)
-		{
-			if (*s_Data.TextureSlots[i].get() == *texture.get())
-			{
-				texIndex = i;
-			}
-		}
-		if (texIndex == 0.0f)
-		{
-			texIndex = s_Data.TextureSlotsIndex; 
-			s_Data.TextureSlots[s_Data.TextureSlotsIndex] = texture;
-			s_Data.TextureSlotsIndex++;
-		}
+		
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), { 0.0f,0.0f,1.0f })
 			* glm::scale(glm::mat4(1.0f), { size.x,size.y,1.0f });
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[0];
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[1];
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[2];
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexBufferPtr->Color = color;
-		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[3];
-		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
-		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
-		s_Data.QuadVertexBufferPtr++;
-
-		s_Data.IndicesCount += 6;
-
-		s_Data.Stats.QuadCount++;
+		DrawQuad(transform, texture, texZoomLevel, tintColor);
 
 	}
 	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, Ref<SubTexture2D> subTexture, float texZoomLevel, glm::vec4 tintColor)
@@ -336,6 +261,118 @@ namespace Resug
 
 		s_Data.Stats.QuadCount++;
 
+	}
+	void Renderer2D::DrawQuad(glm::mat4 transform, glm::vec4 color)
+	{
+		RG_PROFILE_FUNCTION();
+
+		if (s_Data.Stats.QuadCount >= s_Data.MaxQuads)
+		{
+			FlushAndReset();
+		}
+
+		float texIndex = 0.0f;
+		float texZoomLevel = 1.0f;
+		glm::vec2 texCoords[4] = {
+			{0.0f,0.0f},
+			{0.0f,0.0f},
+			{0.0f,0.0f},
+			{0.0f,0.0f } };
+
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[0];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+		\
+			s_Data.IndicesCount += 6;
+
+		s_Data.Stats.QuadCount++;
+	}
+	void Renderer2D::DrawQuad(glm::mat4 transform, Ref<Texture2D> texture, float texZoomLevel, glm::vec4 tintColor)
+	{
+		RG_PROFILE_FUNCTION();
+		if (s_Data.Stats.QuadCount >= s_Data.MaxQuads)
+		{
+			FlushAndReset();
+		}
+
+		glm::vec4 color = tintColor;
+		glm::vec2 texCoords[4] = {
+			{0.0f,0.0f},
+			{1.0f,0.0f},
+			{1.0f,1.0f},
+			{0.0f,1.0f } };
+
+		float texIndex = 0.0f;
+		for (int i = 1; i < s_Data.TextureSlotsIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				texIndex = i;
+			}
+		}
+		if (texIndex == 0.0f)
+		{
+			texIndex = s_Data.TextureSlotsIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotsIndex] = texture;
+			s_Data.TextureSlotsIndex++;
+		}
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[0];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[0];
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[1];
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[2];
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
+		s_Data.QuadVertexBufferPtr->Color = color;
+		s_Data.QuadVertexBufferPtr->TexCoord = texCoords[3];
+		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
+		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.QuadVertexBufferPtr++;
+
+		s_Data.IndicesCount += 6;
+
+		s_Data.Stats.QuadCount++;
 	}
 	void Renderer2D::DrawRotatedQuad(glm::vec2 position, glm::vec2 size, float rotation, glm::vec4 color)
 	{

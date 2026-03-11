@@ -22,12 +22,15 @@ namespace Resug {
 		~Application();
 		void Run();
 
+		void Close();
+
 		void OnEvent(Event& e);
 
 		void PushLayer(Layer* layer);
 		void PushOverLayer(Layer* layer);
 		inline static Application& Get() { return *s_Instance;}
 		inline Window& GetWindow() { return *m_Window; }
+		inline ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 	private:
 
 		bool OnWindowClose(WindowCloseEvent& event);

@@ -10,3 +10,6 @@
 [submodule "Resurge/vendor/glm"]
 	path = Resurge/vendor/glm
 	url = http://github.com/icaven/glm
+[submodule "Resurge/vendor/yaml-cpp"]
+	path = Resurge/vendor/yaml-cpp
+	url = https://github.com/thecherno/yaml-cpp

@@ -2,7 +2,7 @@
 #include "OrthographicCameraController.h"
 
 #include"Resug/Core/KeyCode.h"
-#include"Platform/Windows/WindowsInput.h"
+#include"Resug/Core/Input.h"
 
 namespace Resug
 {
@@ -49,7 +49,7 @@ namespace Resug
 	}
 	bool OrthographicCameraController::OnWindowResized(WindowResizeEvent& e)
 	{
-		
+		RG_CORE_INFO("re:camera:OnWindowResized:  RUNRUNRUN");
 		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
