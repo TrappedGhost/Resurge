@@ -9,6 +9,7 @@
 #include"Resug/Core/Application.h"
 #include"GLFW/glfw3.h"
 
+#include"ImGuizmo.h"
 
 namespace Resug
 {
@@ -69,6 +70,7 @@ namespace Resug
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 		//RG_CORE_INFO("begin");
 	}
 	

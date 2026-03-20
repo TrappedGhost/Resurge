@@ -16,6 +16,7 @@ public:
 	virtual void OnUpdate(Resug::Timestep& ts) override;
 	virtual void OnImGuiRender() override;
 	virtual void OnEvent(Resug::Event& event) override;
+	bool OnKeyPressed(Resug::KeyPressedEvent& event);
 private:
 	Resug::OrthographicCameraController m_CameraController;
 
@@ -29,9 +30,9 @@ private:
 	Resug::Ref<Resug::FrameBuffer> m_FrameBuffer;
 
 	Resug::Ref<Resug::Scene> m_ActiveScene;
-	Resug::Entity m_SquareEntity;
-	Resug::Entity m_CamearEntity;
-	Resug::Entity m_SecondCameraEntity;
+	//Resug::Entity m_SquareEntity;
+	//Resug::Entity m_CamearEntity;
+	//Resug::Entity m_SecondCameraEntity;
 
 	bool m_PrimaryCamera = false;
 
@@ -44,9 +45,20 @@ private:
 
 	Resug::SceneHierarchyPanel m_SceneHierarchyPanel;
 	Resug::EntityPropertiesPanel m_EntityPropertiesPanel;
+	Resug::EditerCamera m_EditerCamera;//TODO：增加缩放，限制操作在视口内。
+
+	uint32_t m_GizomType = -1;
 
 	Resug::Serializer m_Serializer;
 
+	enum class EditerStatus
+	{
+		Edit = 0,
+		Play = 1,
+		Stop = 2
+	};
+
+	EditerStatus m_EditerStatus = EditerStatus::Edit;
 
 };
 

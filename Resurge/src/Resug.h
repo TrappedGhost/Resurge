@@ -26,6 +26,7 @@
 #include"Resug/Renderer/SubTexture.h"
 #include"Resug/Renderer/FrameBuffer.h"
 #include"Resug/Renderer/Camera.h" 
+#include"Resug/Renderer/EditerCamera.h" 
 #include"Resug/Renderer/OrthographicCamera.h" 
 //-----------------------------
 

@@ -135,7 +135,7 @@ namespace Resug
 		if (entity.HasComponent<CameraComponent>())
 		{
 			auto& cameraComp = entity.GetComponent<CameraComponent>();
-			auto& sceneCamera = cameraComp.camera;
+			auto& sceneCamera = cameraComp.Camera;
 
 			out << YAML::Key << "CameraComponent";
 			out << YAML::BeginMap;
@@ -151,6 +151,26 @@ namespace Resug
 			out << YAML::Key << "CameraFar" << YAML::Value << sceneCamera.GetCameraFar();
 			//out << YAML::Key << "CameraProjection" << YAML::Value << sceneCamera.GetCameraFar();
 
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<RigidBodyComponent>())
+		{
+			auto& rb = entity.GetComponent<RigidBodyComponent>();
+			out << YAML::Key << "RigidBodyComponent";
+			out << YAML::BeginMap;
+			out << YAML::Key << "RigidBodyVelocity" << YAML::Value << rb.rb.GetVelocity();
+			out << YAML::Key << "RigidBodyAcceleration" << YAML::Value << rb.rb.GetAcceleration();
+			out << YAML::Key << "RigidBodyForce" << YAML::Value << rb.rb.GetForce();
+			out << YAML::Key << "RigidBodyMass" << YAML::Value << rb.rb.GetMass();
+
+			out << YAML::EndMap;
+		}
+
+		if (entity.HasComponent<BoxCollider2DComponent>())
+		{
+			auto& sprite = entity.GetComponent<BoxCollider2DComponent>();
+			out << YAML::Key << "BoxCollider2DComponent";
+			out << YAML::BeginMap;
 			out << YAML::EndMap;
 		}
 
@@ -210,13 +230,13 @@ namespace Resug
 					if (camNode["Fixed"])
 						cameraComp.Fixed = camNode["Fixed"].as<bool>();
 					if (camNode["CameraType"])
-						cameraComp.camera.SetCameraType((SceneCamera::CameraType)camNode["CameraType"].as<int>());
+						cameraComp.Camera.SetCameraType((SceneCamera::CameraType)camNode["CameraType"].as<int>());
 					if (camNode["CameraSize"])
-						cameraComp.camera.SetCameraSize(camNode["CameraSize"].as<float>());
+						cameraComp.Camera.SetCameraSize(camNode["CameraSize"].as<float>());
 					if (camNode["CameraNear"])
-						cameraComp.camera.SetCameraNear(camNode["CameraNear"].as<float>());
+						cameraComp.Camera.SetCameraNear(camNode["CameraNear"].as<float>());
 					if (camNode["CameraFar"])
-						cameraComp.camera.SetCameraFar(camNode["CameraFar"].as<float>());
+						cameraComp.Camera.SetCameraFar(camNode["CameraFar"].as<float>());
 				}
 
 				// SpriteRendererComponent
@@ -226,6 +246,19 @@ namespace Resug
 					sprite.Color = entityNode["SpriteRendererComponent"]["Color"].as<glm::vec4>();
 				}
 
+				if (entityNode["RigidBodyComponent"])
+				{
+					auto& rb = entity.AddComponent<RigidBodyComponent>();
+					rb.rb.SetVelocity ( entityNode["RigidBodyComponent"]["RigidBodyVelocity"].as<glm::vec3>());
+					rb.rb.SetAcceleration( entityNode["RigidBodyComponent"]["RigidBodyAcceleration"].as<glm::vec3>());
+					rb.rb.SetForce ( entityNode["RigidBodyComponent"]["RigidBodyForce"].as<glm::vec3>());
+					rb.rb.SetMass ( entityNode["RigidBodyComponent"]["RigidBodyMass"].as<float>());
+				}
+
+				if (entityNode["BoxCollider2DComponent"])
+				{
+					auto& sprite = entity.AddComponent<BoxCollider2DComponent>();
+				}
 			}//for (auto entityNode : entities)
 
 		}

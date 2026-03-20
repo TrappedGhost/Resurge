@@ -40,6 +40,16 @@ namespace Resug
                 entity.AddComponent<SpriteRendererComponent>();
                 ImGui::CloseCurrentPopup();
             }
+            if (ImGui::MenuItem("RigidBody"))
+            {
+                entity.AddComponent<RigidBodyComponent>();
+                ImGui::CloseCurrentPopup();
+            }
+            if (ImGui::MenuItem("BoxCollider2D"))
+            {
+                entity.AddComponent<BoxCollider2DComponent>();
+                ImGui::CloseCurrentPopup();
+            }
             ImGui::EndPopup();
         }
 
@@ -116,7 +126,7 @@ namespace Resug
             if (treeNode)
             {
                 auto& cameraComponent = m_Entity.GetComponent<CameraComponent>();
-                auto& camera = cameraComponent.camera;
+                auto& camera = cameraComponent.Camera;
 
                 if (ImGui::Checkbox("Camera Primary", &cameraComponent.Primary));
 
@@ -131,7 +141,7 @@ namespace Resug
                         if (ImGui::Selectable(cameraTypeString[i], isSelected))
                         {
                             cameraTypeIndex = i;
-                            cameraComponent.camera.SetCameraType((SceneCamera::CameraType)i);
+                            cameraComponent.Camera.SetCameraType((SceneCamera::CameraType)i);
                         }
 
                         if (isSelected)
@@ -189,6 +199,74 @@ namespace Resug
 
             if (componentShouldDelete)
                 m_Entity.RemoveComponent<SpriteRendererComponent>();
+        }
+
+        //RigidBody/////////////////////////////
+        if (m_Entity.HasComponent<RigidBodyComponent>())
+        {
+            bool componentShouldDelete = false;
+
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(RigidBodyComponent).hash_code(), treeFlag, "RigidBodyComponent"));
+            ImGui::SameLine();
+            if (ImGui::Button("Component Setting"))
+                ImGui::OpenPopup("ComponentSetting");
+            if (ImGui::BeginPopup("ComponentSetting"))
+            {
+                if (ImGui::MenuItem("Delete Component"))
+                    componentShouldDelete = true;
+                ImGui::EndPopup();
+            }
+            if (treeNode)
+            {
+                auto& rbComponent = m_Entity.GetComponent<RigidBodyComponent>();
+                auto& rb = rbComponent.rb;
+                glm::vec3 velocity = rb.GetVelocity();
+                if (ImGui::DragFloat3("Position", glm::value_ptr(velocity), 0.1f))
+                    rb.SetVelocity(velocity);
+                glm::vec3 acc = rb.GetAcceleration();
+                if (ImGui::DragFloat3("Position", glm::value_ptr(acc), 0.1f))
+                    rb.SetAcceleration(acc);
+                glm::vec3 force = rb.GetForce();
+                if (ImGui::DragFloat3("Position", glm::value_ptr(force), 0.1f))
+                    rb.SetForce(force);
+                float mass = rb.GetMass();
+                if (ImGui::DragFloat("Position", &mass, 0.1f))
+                    rb.SetMass(mass);
+
+
+                ImGui::TreePop();
+            }
+
+            if (componentShouldDelete)
+                m_Entity.RemoveComponent<RigidBodyComponent>();
+        }
+
+        //BoxCollider2D/////////////////////////////
+        if (m_Entity.HasComponent<BoxCollider2DComponent>())
+        {
+            bool componentShouldDelete = false;
+
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(BoxCollider2DComponent).hash_code(), treeFlag, "RigidBodyComponent"));
+            ImGui::SameLine();
+            if (ImGui::Button("Component Setting"))
+                ImGui::OpenPopup("ComponentSetting");
+            if (ImGui::BeginPopup("ComponentSetting"))
+            {
+                if (ImGui::MenuItem("Delete Component"))
+                    componentShouldDelete = true;
+                ImGui::EndPopup();
+            }
+            if (treeNode)
+            {
+                ImGui::TreePop();
+
+                auto& collCom = m_Entity.GetComponent<BoxCollider2DComponent>();
+                auto& collider = collCom.BoxCollider;
+
+            }
+
+            if (componentShouldDelete)
+                m_Entity.RemoveComponent<BoxCollider2DComponent>();
         }
     }
 }

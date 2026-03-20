@@ -13,3 +13,9 @@
 [submodule "Resurge/vendor/yaml-cpp"]
 	path = Resurge/vendor/yaml-cpp
 	url = https://github.com/thecherno/yaml-cpp
+[submodule "Resurge/vender/ImGuizmo"]
+	path = Resurge/vender/ImGuizmo
+	url = https://github.com/thecherno/imguizmo
+[submodule "Resurge/vendor/ImGuizmo"]
+	path = Resurge/vendor/ImGuizmo
+	url = https://github.com/thecherno/imguizmo

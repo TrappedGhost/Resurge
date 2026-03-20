@@ -15,6 +15,7 @@
 
 #include"Resug/Core/Core.h"
 #include"Resug/Core/Log.h"
+#include"Resug/Core/Timestep.h"
 #include"Resug/Debug/Instrumentor.h"
 #include"Resug/Debug/Operator.h"
 

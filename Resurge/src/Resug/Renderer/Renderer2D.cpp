@@ -3,7 +3,24 @@
 #include "Renderer2D.h"
 namespace Resug
 {
+	struct CircleVertex
+	{
+		glm::vec4 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+		float TexIndex;
+		float TexZoomLevel;
+
+	};
 	struct QuadVertex
+	{
+		glm::vec4 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+		float TexIndex;
+		float TexZoomLevel;
+	};
+	struct TriangleVertex
 	{
 		glm::vec4 Position;
 		glm::vec4 Color;
@@ -14,16 +31,20 @@ namespace Resug
 
 	struct Renderer2DData
 	{
+		static const uint32_t MaxTextureSlots = 32;
+		Ref<Shader> TextureShader;
+		Ref<Texture2D> WhiteTexture;
+		std::array<Ref<Texture>, MaxTextureSlots> TextureSlots;
+
+		Renderer2D::Statistics Stats;
+		////////////////////////////////////////////Quad///////////////////////////////////////////////////////
 		uint32_t MaxQuads = 200;
 		uint32_t MaxVertices = 4 * MaxQuads;
 		uint32_t MaxIndices = 6 * MaxQuads;
-		static const uint32_t MaxTextureSlots = 32;
 
-		Ref<VertexArray> VertexArray;
-		Ref<VertexBuffer> VertexBuffer;
-		Ref<IndexBuffer> IndexBuffer;
-		Ref<Shader> TextureShader;
-		Ref<Texture2D> WhiteTexture;
+		Ref<VertexArray> QuadVertexArray;
+		Ref<VertexBuffer> QuadVertexBuffer;
+		Ref<IndexBuffer> QuadIndexBuffer;
 
 		uint32_t IndicesCount;
 		uint32_t TextureSlotsIndex;
@@ -32,9 +53,39 @@ namespace Resug
 		QuadVertex* QuadVertexBufferPtr;
 
 		glm::vec4 QuadVertexPosition[4];
-		std::array<Ref<Texture>, MaxTextureSlots> TextureSlots;
+
+		////////////////////////////////////////////Circle///////////////////////////////////////////////////////
+		uint32_t MaxCircles = 200;
+		uint32_t SegmentsPerCircle = 20;
+		uint32_t MaxCircleVertices = MaxCircles * (SegmentsPerCircle + 1);
+		uint32_t MaxCircleIndices = MaxCircles * SegmentsPerCircle * 3;
+
+		Ref<VertexArray> CircleVertexArray;
+		Ref<VertexBuffer> CircleVertexBuffer;
+		Ref<IndexBuffer> CircleIndexBuffer;
 	
-		Renderer2D::Statistics Stats;
+		glm::vec4 CircleVertexPosition[21];
+		uint32_t CircleIndicesCount;
+	
+		CircleVertex* CircleVertexBufferBase;
+		CircleVertex* CircleVertexBufferPtr;
+
+		////////////////////////////////////////////Triangle///////////////////////////////////////////////////////
+		uint32_t MaxTriangles = 200;
+		uint32_t MaxTriangleVertices = 3 * MaxTriangles;
+		uint32_t MaxTriangleIndices = 3 * MaxTriangles;
+
+		Ref<VertexArray> TriangleVertexArray;
+		Ref<VertexBuffer> TriangleVertexBuffer;
+		Ref<IndexBuffer> TriangleIndexBuffer;
+
+		glm::vec4 TriangleVertexPosition[3];
+		uint32_t TriangleIndicesCount;
+
+		TriangleVertex* TriangleVertexBufferBase;
+		TriangleVertex* TriangleVertexBufferPtr;
+
+
 	};
 
 	static Renderer2DData s_Data;
@@ -44,12 +95,12 @@ namespace Resug
 	{
 		RG_PROFILE_FUNCTION();
 
-		s_Data.VertexArray = Resug::VertexArray::Create();
+		s_Data.QuadVertexArray = Resug::VertexArray::Create();
 
 
-		s_Data.VertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
+		s_Data.QuadVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
 
-		s_Data.VertexBuffer->SetLayout({
+		s_Data.QuadVertexBuffer->SetLayout({
 			{Resug::ShaderDataType::Float4, "a_Position"},
 			{Resug::ShaderDataType::Float4, "a_Color"},
 			{Resug::ShaderDataType::Float2, "a_TexCoord"},
@@ -57,7 +108,7 @@ namespace Resug
 			{Resug::ShaderDataType::Float , "a_TexZoomLevel"}
 			});
 
-		s_Data.VertexArray->AddVertexBuffer(s_Data.VertexBuffer);
+		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
 
@@ -75,8 +126,15 @@ namespace Resug
 
 			offset += 4;
 		}
-		s_Data.IndexBuffer = Resug::IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
-		s_Data.VertexArray->SetIndexBuffer(s_Data.IndexBuffer);
+		s_Data.QuadIndexBuffer = Resug::IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+		s_Data.QuadVertexArray->SetIndexBuffer(s_Data.QuadIndexBuffer);
+
+		s_Data.QuadVertexPosition[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
+		s_Data.QuadVertexPosition[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
+		s_Data.QuadVertexPosition[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
+		s_Data.QuadVertexPosition[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+
+		Renderer2D::InitTriangle();
 
 
 		int32_t shaderBindTexIndex[s_Data.MaxTextureSlots];
@@ -93,69 +151,166 @@ namespace Resug
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
-		s_Data.QuadVertexPosition[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
-		s_Data.QuadVertexPosition[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
-		s_Data.QuadVertexPosition[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
-		s_Data.QuadVertexPosition[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
 
 	}
+
+	//////////////////////////////////////////////////InitCircle/////////////////////////////////////////////////
+	void Renderer2D::InitCircle()
+	{
+		//TODO: 完成圆的初始化
+		s_Data.CircleVertexArray = VertexArray::Create();
+		s_Data.CircleVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxCircleVertices * sizeof(CircleVertex));
+
+		s_Data.CircleVertexBuffer->SetLayout({
+			{Resug::ShaderDataType::Float4, "a_Position"},
+			{Resug::ShaderDataType::Float4, "a_Color"},
+			{Resug::ShaderDataType::Float2, "a_TexCoord"},
+			{Resug::ShaderDataType::Float , "a_TexIndex"},
+			{Resug::ShaderDataType::Float , "a_TexZoomLevel"}
+			});
+
+		s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
+
+	}
+	//////////////////////////////////////////////////InitTriangle/////////////////////////////////////////////////
+	
+	void Renderer2D::InitTriangle()
+	{
+		RG_PROFILE_FUNCTION();
+
+		s_Data.TriangleVertexArray = Resug::VertexArray::Create();
+
+		s_Data.TriangleVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxTriangleVertices * sizeof(TriangleVertex));
+
+		s_Data.TriangleVertexBuffer->SetLayout({
+			{Resug::ShaderDataType::Float4, "a_Position"},
+			{Resug::ShaderDataType::Float4, "a_Color"},
+			{Resug::ShaderDataType::Float2, "a_TexCoord"},
+			{Resug::ShaderDataType::Float , "a_TexIndex"},
+			{Resug::ShaderDataType::Float , "a_TexZoomLevel"}
+			});
+
+		s_Data.TriangleVertexArray->AddVertexBuffer(s_Data.TriangleVertexBuffer);
+
+		s_Data.TriangleVertexBufferBase = new TriangleVertex[s_Data.MaxTriangleVertices];
+
+		uint32_t* triangleIndices = new uint32_t[s_Data.MaxTriangleIndices];
+		uint32_t offset = 0;
+		for (uint32_t i = 0; i < s_Data.MaxTriangleIndices; i += 3)
+		{
+			triangleIndices[i + 0] = offset + 0;
+			triangleIndices[i + 1] = offset + 1;
+			triangleIndices[i + 2] = offset + 2;
+
+			offset += 3;
+		}
+
+		s_Data.TriangleIndexBuffer = Resug::IndexBuffer::Create(triangleIndices, s_Data.MaxTriangleIndices);
+		s_Data.TriangleVertexArray->SetIndexBuffer(s_Data.TriangleIndexBuffer);
+
+		delete[] triangleIndices;
+
+		const float height = 0.866f;  // sqrt(3)/2
+
+		s_Data.TriangleVertexPosition[0] = glm::vec4(0.0f, -height / 2.0f, 0.0f, 1.0f);     // 左下
+		s_Data.TriangleVertexPosition[1] = glm::vec4(0.5f, height / 2.0f, 0.0f, 1.0f);      // 上
+		s_Data.TriangleVertexPosition[2] = glm::vec4(-0.5f, height / 2.0f, 0.0f, 1.0f);      // 右下
+
+		
+		s_Data.TriangleIndicesCount = 0;
+
+	}
+
+
+
 	void Renderer2D::Shutdown()
 	{
 		RG_PROFILE_FUNCTION();
 	}
+
 	void Renderer2D::WindowResize(uint32_t width, uint32_t height)
 	{
 	}
+
+	//////////////////////////////////////////////////BeginScene/////////////////////////////////////////////////
 	void Renderer2D::BeginScene(Camera& camera, glm::mat4 transform)
 	{
 		RG_PROFILE_FUNCTION();
-		glm::mat4 ViewProj = camera.GetProjection() * glm::inverse(transform);
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->UploadMat4("u_ViewProjection", ViewProj);
+		BeginScene(camera.GetProjection() * glm::inverse(transform));
 
-		s_Data.IndicesCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-		s_Data.TextureSlotsIndex = 1;
+		
 	}
 	void Renderer2D::BeginScene(glm::mat4 projection, glm::mat4 transform)
 	{
 		RG_PROFILE_FUNCTION();
-		//std::cout << transform[3][0] << "\n";
-		glm::mat4 ViewProj = projection * glm::inverse(transform);
-		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->UploadMat4("u_ViewProjection", ViewProj);
-
-		s_Data.IndicesCount = 0;
-		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
-		s_Data.TextureSlotsIndex = 1;
+		BeginScene(projection * glm::inverse(transform));
 	}
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
 	{
 		RG_PROFILE_FUNCTION();
+		BeginScene(camera.GetViewProjectionMatrix());
+	}
+	void Renderer2D::BeginScene(glm::mat4 viewprojection)
+	{
+		std::cout<<viewprojection<<" ";
 		s_Data.TextureShader->Bind();
-		s_Data.TextureShader->UploadMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
+		s_Data.TextureShader->UploadMat4("u_ViewProjection", viewprojection);
+		
+		//quad
 		s_Data.IndicesCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+		//triangle
+		s_Data.TriangleIndicesCount = 0;
+		s_Data.TriangleVertexBufferPtr = s_Data.TriangleVertexBufferBase;
+
 		s_Data.TextureSlotsIndex = 1;
 	}
+
 	void Renderer2D::EndScene()
 	{
-		uint32_t DataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+		if (s_Data.IndicesCount > 0)
+		{
+			s_Data.QuadVertexArray->Bind();
+			uint32_t QuadDataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+			s_Data.QuadVertexArray->SetData(s_Data.QuadVertexBufferBase, QuadDataSize);
+			Flush();
+		}
 
-		s_Data.VertexArray->SetData(s_Data.QuadVertexBufferBase, DataSize);
-
-		Flush();
+		if (s_Data.TriangleIndicesCount > 0)
+		{
+			uint32_t TriangleDataSize = (uint8_t*)s_Data.TriangleVertexBufferPtr - (uint8_t*)s_Data.TriangleVertexBufferBase;
+			s_Data.TriangleVertexArray->SetData(s_Data.TriangleVertexBufferBase, TriangleDataSize);
+			FlushTriangles();
+		}
 	}
+
+
 	void Renderer2D::Flush()
 	{
 		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
+		
+		for (int i = 0; i < 8; i++)
+		{
+			std::cout << s_Data.QuadVertexBufferBase[i].Position << " ";
+		}
 
-		RendererCommand::DrawIndexed(s_Data.VertexArray, s_Data.IndicesCount);
+		RendererCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.IndicesCount);
 		
 		s_Data.Stats.DrawCalls++;
 	}
+
+	void Renderer2D::FlushTriangles()
+	{
+		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
+			s_Data.TextureSlots[i]->Bind(i);
+
+		RendererCommand::DrawIndexed(s_Data.TriangleVertexArray, s_Data.TriangleIndicesCount);
+
+		s_Data.Stats.DrawCalls++;
+	}
+
+
 	void Renderer2D::FlushAndReset()
 	{
 		EndScene();
@@ -164,6 +319,8 @@ namespace Resug
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 		s_Data.TextureSlotsIndex = 1;
 	}
+
+
 	void Renderer2D::DrawQuad(glm::vec2 position, glm::vec2 size, glm::vec4 color)
 	{
 		Renderer2D::DrawQuad({ position.x, position.y, 0.0f }, size, color);
@@ -264,6 +421,10 @@ namespace Resug
 	}
 	void Renderer2D::DrawQuad(glm::mat4 transform, glm::vec4 color)
 	{
+		DrawQuad(transform, color, s_Data.QuadVertexPosition);
+	}
+	void Renderer2D::DrawQuad(glm::mat4 transform, glm::vec4 color, glm::vec4* vertexPosition)
+	{
 		RG_PROFILE_FUNCTION();
 
 		if (s_Data.Stats.QuadCount >= s_Data.MaxQuads)
@@ -280,37 +441,38 @@ namespace Resug
 			{0.0f,0.0f } };
 
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[0];
+		s_Data.QuadVertexBufferPtr->Position = transform * vertexPosition[0];
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
 		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[1];
+		s_Data.QuadVertexBufferPtr->Position = transform * vertexPosition[1];
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
 		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[2];
+		s_Data.QuadVertexBufferPtr->Position = transform * vertexPosition[2];
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
 		s_Data.QuadVertexBufferPtr++;
 
-		s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[3];
+		s_Data.QuadVertexBufferPtr->Position = transform * vertexPosition[3];
 		s_Data.QuadVertexBufferPtr->Color = color;
 		s_Data.QuadVertexBufferPtr->TexCoord = { 0.0f,0.0f };
 		s_Data.QuadVertexBufferPtr->TexIndex = texIndex;
 		s_Data.QuadVertexBufferPtr->TexZoomLevel = texZoomLevel;
 		s_Data.QuadVertexBufferPtr++;
-		\
-			s_Data.IndicesCount += 6;
+
+		s_Data.IndicesCount += 6;
 
 		s_Data.Stats.QuadCount++;
+
 	}
 	void Renderer2D::DrawQuad(glm::mat4 transform, Ref<Texture2D> texture, float texZoomLevel, glm::vec4 tintColor)
 	{
@@ -565,6 +727,45 @@ namespace Resug
 
 		s_Data.Stats.QuadCount++;
 	}
+	
+	
+	void Renderer2D::DrawTriangle(glm::mat4 transform, glm::vec4 color)
+	{
+		DrawTriangle(transform, color, s_Data.TriangleVertexPosition);
+	}
+
+	void Renderer2D::DrawTriangle(glm::mat4 transform, glm::vec4 color, glm::vec4* vertexPosition)
+	{
+		//TODO ： 记录状态
+
+		float texIndex = 0.0f;
+		float texZoomLevel = 1.0f;
+		glm::vec2 texCoords[3] = {
+			{0.0f, 0.0f},
+			{1.0f, 0.0f},
+			{0.5f, 1.0f}  // 简单的三角形纹理坐标
+		};
+
+		// 添加三角形的3个顶点
+		for (int i = 0; i < 3; i++)
+		{
+			s_Data.TriangleVertexBufferPtr->Position = transform * vertexPosition[i];
+			std::cout << s_Data.TriangleVertexBufferPtr->Position << " ";
+			s_Data.TriangleVertexBufferPtr->Color = color;
+			s_Data.TriangleVertexBufferPtr->TexCoord = texCoords[i];
+			s_Data.TriangleVertexBufferPtr->TexIndex = texIndex;
+			s_Data.TriangleVertexBufferPtr->TexZoomLevel = texZoomLevel;
+			s_Data.TriangleVertexBufferPtr++;
+
+
+		}
+
+		std::cout << "\n";
+		// 三角形使用3个索引
+		s_Data.TriangleIndicesCount += 3;
+	}
+
+
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Statistics));
@@ -573,4 +774,6 @@ namespace Resug
 	{
 		return s_Data.Stats;
 	}
+
+
 }

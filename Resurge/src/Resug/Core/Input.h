@@ -3,6 +3,8 @@
 
 #include "Resug/Core/Core.h"
 
+#include"Resug/Core/MouseButtonCode.h"
+
 namespace Resug
 {
 	class RESUG_API Input

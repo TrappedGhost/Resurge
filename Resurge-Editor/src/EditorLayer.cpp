@@ -1,11 +1,17 @@
 #include"EditorLayer.h"
 
 #include"imgui.h"
+#include<ImGuizmo.h>
 #include"glm/gtc/type_ptr.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/quaternion.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include"Platform/OpenGL/OpenGLShader.h"
 
 #include"Resug/Util/FileUtil.h"
+
 
 //TODO : 当删除最后一个渲染的实体时，它会任然保留的画面上。
 
@@ -44,9 +50,9 @@ void EditorLayer::OnAttach()
 
 
 
-    m_CamearEntity = m_ActiveScene->CreateEntity("Camera");
+    auto& camearEntity = m_ActiveScene->CreateEntity("Camera");
 
-    m_CamearEntity.AddComponent<Resug::CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+    camearEntity.AddComponent<Resug::CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
     
 
     //TODO : 下面这个相机不能正常工作  疑似glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)  没有之前处理。
@@ -66,10 +72,10 @@ void EditorLayer::OnAttach()
         {
             auto& transform = m_Entity.GetComponent<Resug::TransformComponent>();
 
-            if (Resug::Input::IsKeyPressed(RG_KEY_D))transform.Transform[3][0] += ts;
-            if(Resug::Input::IsKeyPressed(RG_KEY_A)) transform.Transform[3][0] -= ts;
-            if(Resug::Input::IsKeyPressed(RG_KEY_W)) transform.Transform[3][1] += ts;
-            if(Resug::Input::IsKeyPressed(RG_KEY_S)) transform.Transform[3][1] -= ts;
+            //if (Resug::Input::IsKeyPressed(RG_KEY_D))transform.Transform[3][0] += ts;
+            //if(Resug::Input::IsKeyPressed(RG_KEY_A)) transform.Transform[3][0] -= ts;
+            //if(Resug::Input::IsKeyPressed(RG_KEY_W)) transform.Transform[3][1] += ts;
+            //if(Resug::Input::IsKeyPressed(RG_KEY_S)) transform.Transform[3][1] -= ts;
         }
         void OnDestroy()
         {
@@ -77,7 +83,16 @@ void EditorLayer::OnAttach()
         }
     };
 
-    m_CamearEntity.AddComponent<Resug::NativeScriptComponent>().Bind<CameraCotroller>();
+    camearEntity.AddComponent<Resug::NativeScriptComponent>().Bind<CameraCotroller>();
+
+    m_ActiveScene = Resug::CreateRef<Resug::Scene>();
+    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+
+    Resug::Serializer serializer = Resug::Serializer(m_ActiveScene);
+    serializer.Derialize("Assert/Scene/rigicandcoll.resug");
+
+    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
     //Panel
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
@@ -102,6 +117,7 @@ void EditorLayer::OnUpdate(Resug::Timestep& ts)
             //TODO: 去掉强制类型转换。
             m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
             m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+            m_EditerCamera.SetViewportSize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 
         }
 	}
@@ -116,8 +132,24 @@ void EditorLayer::OnUpdate(Resug::Timestep& ts)
 	{
 		RG_PROFILE_SCOPE("Rendering");
 
+        if (m_EditerStatus == EditerStatus::Edit)
+        {
+            m_EditerCamera.OnUpdate();
+            Resug::Renderer2D::BeginScene(m_EditerCamera.GetProjection(), m_EditerCamera.GetCameraTransform());
+            
+            m_ActiveScene->OnUpdateEditor(ts);
+        }
+        else if (m_EditerStatus == EditerStatus::Play)
+        {
+            m_ActiveScene->OnUpdateSimulation(ts);
+            m_ActiveScene->OnUpdateRuntime(ts);
+        }
+        else if (m_EditerStatus == EditerStatus::Stop)
+        {
+               m_ActiveScene->OnUpdateRuntime(ts);
 
-        m_ActiveScene->OnUpdate(ts);
+        }
+
 
         Resug::RendererCommand::Flush();
     
@@ -231,6 +263,12 @@ void EditorLayer::OnImGuiRender()
     ImGui::Text("QuadVertexCount : %d", stats.GetTotalVertexCount());
     ImGui::Text("QuadIndexCount : %d", stats.GetTotalIndexCount());
 
+    if (ImGui::Button("Play"))
+        m_EditerStatus = EditerStatus::Play;
+    if (ImGui::Button("Stop"))
+        m_EditerStatus = EditerStatus::Stop;
+    if (ImGui::Button("Edit"))
+        m_EditerStatus = EditerStatus::Edit;
 
 
     ImGui::End();
@@ -249,6 +287,52 @@ void EditorLayer::OnImGuiRender()
     uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
     ImGui::Image((void*)textureID, ImVec2{ m_ViewportSize.x, m_ViewportSize.y }, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
+    // Gizmos
+
+    Resug::Entity selectedEntity = m_SceneHierarchyPanel.GetSeletedEntity();
+    if (selectedEntity && m_GizomType != -1)
+    {
+      
+        ImGuizmo::SetOrthographic(false);  
+        ImGuizmo::SetDrawlist();
+
+        float windowWidth = (float)ImGui::GetWindowWidth();
+        float windowHeight = (float)ImGui::GetWindowHeight();
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+        
+        // Camera
+        auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
+        auto& camera = cameraEntity.GetComponent<Resug::CameraComponent>().Camera;
+        
+        const glm::mat4& cameraProjection = camera.GetProjection();
+        glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<Resug::TransformComponent>().GetTransform());
+        
+        // Entity transform
+        auto& tc = selectedEntity.GetComponent<Resug::TransformComponent>();
+        glm::mat4 transform = tc.GetTransform();
+
+
+        ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+            (ImGuizmo::OPERATION)m_GizomType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+        
+        if (ImGuizmo::IsUsing())
+        {
+            //TODO: 优化体验
+            glm::vec3 skew;
+            glm::quat rotation;
+            glm::vec3 scale, translation;
+            glm::vec4 perspective;
+
+            glm::decompose(transform, scale, rotation, translation, skew, perspective);
+            
+            tc.Position = translation;
+            tc.Scale = scale;
+            tc.Rotation = glm::degrees(glm::eulerAngles(rotation));
+
+        }
+        
+    }
+
 
     ImGui::End();
 
@@ -265,4 +349,40 @@ void EditorLayer::OnImGuiRender()
 void EditorLayer::OnEvent(Resug::Event& event)
 {
 	m_CameraController.OnEvent(event);
+    Resug::EventDispatcher dispatcher(event);
+    dispatcher.Dispatch<Resug::KeyPressedEvent>(RG_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
 }
+
+bool EditorLayer::OnKeyPressed(Resug::KeyPressedEvent& event)
+{
+    if (event.GetRepeatCount() > 0)
+    {
+        return false;
+    }
+    std::cout << event.GetKeyCode() << " ";
+    switch (event.GetKeyCode())
+    {
+    case RG_KEY_Q:
+    {
+        m_GizomType = 0;
+        break;
+    }
+    case RG_KEY_W:
+    {
+        m_GizomType = 1;
+        break;
+    }
+    case RG_KEY_E:
+    {
+        m_GizomType = 2;
+        break;
+    }
+    case RG_KEY_R:
+    {
+        m_GizomType = -1;
+        break;
+    }
+    }
+}
+
+
