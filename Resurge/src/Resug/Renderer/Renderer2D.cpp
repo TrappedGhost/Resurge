@@ -94,10 +94,9 @@ namespace Resug
 	void Renderer2D::Init()
 	{
 		RG_PROFILE_FUNCTION();
-
+		
 		s_Data.QuadVertexArray = Resug::VertexArray::Create();
-
-
+		
 		s_Data.QuadVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxVertices * sizeof(QuadVertex));
 
 		s_Data.QuadVertexBuffer->SetLayout({
@@ -133,6 +132,9 @@ namespace Resug
 		s_Data.QuadVertexPosition[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
 		s_Data.QuadVertexPosition[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
 		s_Data.QuadVertexPosition[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+
+		s_Data.QuadVertexArray->UnBind();
+		
 
 		Renderer2D::InitTriangle();
 
@@ -179,6 +181,8 @@ namespace Resug
 		RG_PROFILE_FUNCTION();
 
 		s_Data.TriangleVertexArray = Resug::VertexArray::Create();
+
+		s_Data.TriangleVertexArray->Bind();
 
 		s_Data.TriangleVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxTriangleVertices * sizeof(TriangleVertex));
 
@@ -252,7 +256,6 @@ namespace Resug
 	}
 	void Renderer2D::BeginScene(glm::mat4 viewprojection)
 	{
-		std::cout<<viewprojection<<" ";
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->UploadMat4("u_ViewProjection", viewprojection);
 		
@@ -266,21 +269,25 @@ namespace Resug
 		s_Data.TextureSlotsIndex = 1;
 	}
 
+	//////////////////////////////////////////////////EndScene/////////////////////////////////////////////////
 	void Renderer2D::EndScene()
 	{
 		if (s_Data.IndicesCount > 0)
 		{
-			s_Data.QuadVertexArray->Bind();
 			uint32_t QuadDataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-			s_Data.QuadVertexArray->SetData(s_Data.QuadVertexBufferBase, QuadDataSize);
+			s_Data.QuadVertexArray->Bind();
+			s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, QuadDataSize);
 			Flush();
+			s_Data.QuadVertexArray->UnBind();
 		}
 
 		if (s_Data.TriangleIndicesCount > 0)
 		{
 			uint32_t TriangleDataSize = (uint8_t*)s_Data.TriangleVertexBufferPtr - (uint8_t*)s_Data.TriangleVertexBufferBase;
-			s_Data.TriangleVertexArray->SetData(s_Data.TriangleVertexBufferBase, TriangleDataSize);
+			s_Data.TriangleVertexArray->Bind();
+			s_Data.TriangleVertexBuffer->SetData(s_Data.TriangleVertexBufferBase, TriangleDataSize);
 			FlushTriangles();
+			s_Data.TriangleVertexArray->UnBind();
 		}
 	}
 
@@ -290,11 +297,6 @@ namespace Resug
 		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
 		
-		for (int i = 0; i < 8; i++)
-		{
-			std::cout << s_Data.QuadVertexBufferBase[i].Position << " ";
-		}
-
 		RendererCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.IndicesCount);
 		
 		s_Data.Stats.DrawCalls++;
@@ -304,6 +306,8 @@ namespace Resug
 	{
 		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
+
+
 
 		RendererCommand::DrawIndexed(s_Data.TriangleVertexArray, s_Data.TriangleIndicesCount);
 
@@ -750,7 +754,6 @@ namespace Resug
 		for (int i = 0; i < 3; i++)
 		{
 			s_Data.TriangleVertexBufferPtr->Position = transform * vertexPosition[i];
-			std::cout << s_Data.TriangleVertexBufferPtr->Position << " ";
 			s_Data.TriangleVertexBufferPtr->Color = color;
 			s_Data.TriangleVertexBufferPtr->TexCoord = texCoords[i];
 			s_Data.TriangleVertexBufferPtr->TexIndex = texIndex;
@@ -760,7 +763,6 @@ namespace Resug
 
 		}
 
-		std::cout << "\n";
 		// 三角形使用3个索引
 		s_Data.TriangleIndicesCount += 3;
 	}

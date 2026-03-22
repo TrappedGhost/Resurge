@@ -22,6 +22,7 @@ void main()
 	v_TexZoomLevel = a_TexZoomLevel;
 
 	gl_Position = u_ViewProjection * a_Position;
+	//gl_Position =  a_Position;
 }
 
 #type fragment

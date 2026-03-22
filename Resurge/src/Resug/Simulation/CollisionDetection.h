@@ -2,6 +2,9 @@
 #include<glm/glm.hpp>
 #include<cmath>
 
+#include"MeshCollider2D.h"
+#include"BoxCollider2D.h"
+
 namespace Resug
 {
 	extern const double eps;

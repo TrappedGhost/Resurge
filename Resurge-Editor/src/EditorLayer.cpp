@@ -40,9 +40,7 @@ void EditorLayer::OnAttach()
     m_ActiveScene = Resug::CreateRef<Resug::Scene>();
 
 
-    Resug::Entity squareEntity = m_ActiveScene->CreateEntity("namename");
 
-    squareEntity.AddComponent<Resug::SpriteRendererComponent>(glm::vec4{1.0f,1.0f,0.0f,1.0f});
 
     Resug::Entity squareEntity1 = m_ActiveScene->CreateEntity("namename1");
 
@@ -96,6 +94,13 @@ void EditorLayer::OnAttach()
 
     //Panel
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+
+
+    Resug::Entity squareEntity = m_ActiveScene->CreateEntity("Mesh");
+
+    squareEntity.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f }, 11, 11, Resug::Mesh2DType::Quad);
+    squareEntity.AddComponent<Resug::MeshCollider2DComponent>();
+
 
 
 

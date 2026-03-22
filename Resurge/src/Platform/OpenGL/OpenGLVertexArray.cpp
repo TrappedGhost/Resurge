@@ -33,6 +33,8 @@ namespace Resug
 	void OpenGLVertexArray::Bind() const
 	{
 		glBindVertexArray(m_RendererID);
+		//std::cout<<"OpenGLVertexArray::Bind()  " << m_RendererID << "\n";
+
 	}
 
 	void OpenGLVertexArray::UnBind() const
@@ -49,7 +51,8 @@ namespace Resug
 	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
 	{
 		RG_PROFILE_FUNCTION();
-		
+
+
 		RG_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "The VertexBuffer have no layout");
 
 		glBindVertexArray(m_RendererID);
@@ -75,6 +78,7 @@ namespace Resug
 	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(m_RendererID);
+
 		indexBuffer->Bind();
 
 		m_IndexBuffers = indexBuffer;

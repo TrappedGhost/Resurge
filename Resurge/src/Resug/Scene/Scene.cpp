@@ -48,32 +48,59 @@ namespace Resug
 
 	void Scene::OnUpdateEditor(Timestep ts)
 	{
-		
+		/////////////////////////////SpriteRendererComponent////////////////////
 		{
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				glm::vec4 Triangle1[3] = {
+					glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+				};
+				glm::vec4 Triangle2[3] = {
+					glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+				};
+				Renderer2D::DrawTriangle(transform, sprite.Color, Triangle1);
+				Renderer2D::DrawTriangle(transform, sprite.Color, Triangle2);
 
 			}
 		}
 
+		////////////////////////////MeshRendererComponent/////////////////
+
 		{
-
-			auto view = m_Registry.view<NativeScriptComponent>();
-			view.each([&](auto entity, NativeScriptComponent& ns)
+			auto view = m_Registry.view<TransformComponent, MeshRendererComponent>();
+			view.each([&](auto entity, TransformComponent& transform, MeshRendererComponent& meshCom)
 				{
-					if (ns.Instance == nullptr)
+					auto& mesh = meshCom.Mesh;
+					uint32_t unitWidth = mesh.GetWidth();
+					uint32_t unitHeight = mesh.GetHeight();
+
+					for (int i = 0; i < unitHeight-1; i++)
 					{
-						ns.InstanceFunction();
-						ns.Instance->m_Entity = Entity{ entity ,this };
+						for (int j = 0; j < unitWidth-1; j++)
+						{
+							//glm::vec4 average = mesh.CalculateAveragePosition();
+							//transform.Position = glm::vec3(average.x, average.y, average.z);
+							//transform.RecalculateTransform();
+							mesh.CalculateRelative(glm::vec3(0.0f));
 
-						ns.OnCreateFunction(ns.Instance);
+							glm::vec4 l1 = mesh.GetRelativePosition(j  , i);
+							glm::vec4 r1 = mesh.GetRelativePosition(j + 1 , i);
+							glm::vec4 r2 = mesh.GetRelativePosition(j + 1  , i + 1);
+							glm::vec4 l2 = mesh.GetRelativePosition(j  , i + 1);
+							glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
+
+							//std::cout << transform << "\n";
+							//std::cout << l1<<l2<<r1<<r2 << "\n";
+							Renderer2D::DrawQuad(transform, mesh.GetColor(), QuadVertex);
+						}
 					}
-
-					ns.OnUpdateFunction(ns.Instance, ts);
 				});
 		}
 
@@ -83,6 +110,7 @@ namespace Resug
 
 	void Scene::OnUpdateSimulation(Timestep ts)
 	{
+		//////////////////BoxCollider2DComponent//////
 		{
 			auto view = m_Registry.view<TransformComponent, BoxCollider2DComponent>();
 			view.each([&](auto entity, TransformComponent& transform, BoxCollider2DComponent& bc)
@@ -106,6 +134,32 @@ namespace Resug
 
 				});
 		}
+		///////////////MeshCollider2DComponent//////
+		{
+			auto view = m_Registry.view<MeshRendererComponent , MeshCollider2DComponent>();
+			view.each([&](auto entity, MeshRendererComponent& mesherendercom, MeshCollider2DComponent& meshcom)
+				{
+					auto& collider = meshcom.MeshCollider;
+					auto& render = mesherendercom.Mesh;
+					collider.SetVertexSize(render.GetHeight() * render.GetWidth());
+					uint32_t size = collider.m_VertexSize;
+					glm::vec3 velocityArray[1000];
+					for (int i = 0; i < collider.m_VertexSize; i++)
+					{
+						velocityArray[i] = glm::vec3(0.0f, 0.0f, 0.0f);
+						collider.m_VertexPosition[i] = render.m_VertexPosition[i];
+					}
+
+					//collider.OnUpdate(ts, velocityArray);
+
+					for (int i = 0; i < collider.m_VertexSize; i++)
+					{
+						render.m_VertexPosition[i] = glm::vec4(collider.m_VertexPosition[i],1.0f);
+					}
+
+				});
+		}
+
 	}
 
 	void Scene::OnUpdateRuntime(Timestep ts)
@@ -138,10 +192,49 @@ namespace Resug
 			for (auto entity : group)
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				
-				Renderer2D::DrawQuad(transform, sprite.Color);
+				glm::vec4 Triangle1[3] = {
+					glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+				};
+				glm::vec4 Triangle2[3] = {
+					glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+					glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f),
+					glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+				};
+				Renderer2D::DrawTriangle(transform, sprite.Color, Triangle1);
+				Renderer2D::DrawTriangle(transform, sprite.Color, Triangle2);
 
 			}
+		}
+		////////////////////////////MeshRendererComponent/////////////////
+
+		{
+			auto view = m_Registry.view<TransformComponent, MeshRendererComponent>();
+			view.each([&](auto entity, TransformComponent& transform, MeshRendererComponent& meshCom)
+				{
+					auto& mesh = meshCom.Mesh;
+					uint32_t unitWidth = mesh.GetWidth();
+					uint32_t unitHeight = mesh.GetHeight();
+
+					for (int i = 0; i < unitHeight - 1; i++)
+					{
+						for (int j = 0; j < unitWidth - 1; j++)
+						{
+							glm::vec4 average = mesh.CalculateAveragePosition();
+							transform.Position = glm::vec3(average.x, average.y, average.z);
+							transform.RecalculateTransform();
+							mesh.CalculateRelative(transform.Position);
+
+							glm::vec4 l1 = mesh.GetRelativePosition(j, i);
+							glm::vec4 r1 = mesh.GetRelativePosition(j + 1, i);
+							glm::vec4 r2 = mesh.GetRelativePosition(j + 1, i + 1);
+							glm::vec4 l2 = mesh.GetRelativePosition(j, i + 1);
+							glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
+							Renderer2D::DrawQuad(transform, mesh.GetColor(), QuadVertex);
+						}
+					}
+				});
 		}
 		//NativeScriptComponent////////////////
 		{

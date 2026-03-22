@@ -150,6 +150,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Resug\Renderer\Mesh2D.h" />
+    <ClInclude Include="src\Resug\Simulation\MeshCollider2D.h" />
+    <ClInclude Include="src\Resug\Simulation\BoxCollider2D.h" />
     <ClInclude Include="src\Resug\Simulation\Collider.h" />
     <ClInclude Include="src\Resug\Simulation\CollisionDetection.h" />
     <ClInclude Include="src\Resug\Simulation\RigidBody.h" />
@@ -627,6 +630,9 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Resug\Renderer\Mesh2D.cpp" />
+    <ClCompile Include="src\Resug\Simulation\MeshCollider2D.cpp" />
+    <ClCompile Include="src\Resug\Simulation\BoxCollider2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\Collider.cpp" />
     <ClCompile Include="src\Resug\Simulation\CollisionDetection.cpp" />
     <ClCompile Include="src\Resug\Simulation\RigidBody.cpp" />

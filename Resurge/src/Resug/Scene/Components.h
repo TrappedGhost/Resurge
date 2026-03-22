@@ -5,13 +5,15 @@
 
 #include"Resug/Core/Timestep.h"
 #include"Resug/Renderer/SceneCamera.h"
+#include"Resug/Renderer/Mesh2D.h"
 
 #include"ScriptableEntity.h"
 
 #include"Resug/Simulation/SpringMassSystem.h"
 #include"Resug/Simulation/FEM.h"
 #include"Resug/Simulation/RigidBody.h"
-#include"Resug/Simulation/Collider.h"
+#include"Resug/Simulation/BoxCollider2D.h"
+#include"Resug/Simulation/MeshCollider2D.h"
 
 #include<iostream>
 
@@ -81,6 +83,23 @@ namespace Resug
 
 	};
 
+	struct MeshRendererComponent
+	{
+
+		Mesh2D Mesh;
+
+		MeshRendererComponent() = default;
+		MeshRendererComponent(const MeshRendererComponent&) = default;
+		MeshRendererComponent(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type)
+		{
+			Mesh.SetColor(color);
+			Mesh.SetWidth(width);
+			Mesh.SetHeight(height);
+			Mesh.SetType(type);
+			Mesh.CalculateVertexPosition();
+		}
+	};
+
 	struct CameraComponent
 	{
 		SceneCamera Camera ;
@@ -93,28 +112,10 @@ namespace Resug
 			:Camera({projection}){ }
 	};
 
-	struct NativeScriptComponent
-	{
-		ScriptableEntity*  Instance = nullptr;
 
-		std::function<void()> InstanceFunction;
-		std::function<void()> DestroyInstanceFunction;
 
-		std::function<void(ScriptableEntity*)> OnCreateFunction;
-		std::function<void(ScriptableEntity*)> OnDeatroyFunction;
-		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
 
-		template<typename T>
-		void Bind()
-		{
-			InstanceFunction = [&]() {Instance = new T(); };
-			DestroyInstanceFunction = [&]() {delete (T*)Instance; Instance = nullptr; };
-
-			OnCreateFunction = [](ScriptableEntity* instance) {((T*)instance)->OnCreate(); };
-			OnDeatroyFunction = [](ScriptableEntity* instance) {((T*)instance)->OnDestroy(); };
-			OnUpdateFunction = [](ScriptableEntity* instance, Timestep ts) {((T*)instance)->OnUpdate(ts); };
-		}
-	};
+	////////////////////////////////////////////Simulation/////////////////////////////
 
 
 	struct RigidBodyComponent
@@ -155,6 +156,61 @@ namespace Resug
 		BoxCollider2DComponent() = default;
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 
+	};
+
+	struct MeshCollider2DComponent
+	{
+		MeshCollider2D MeshCollider;
+
+		glm::vec3  RelativePosition[4];
+
+
+		void SetVertexPosition(glm::vec3 Position)
+		{
+			RelativePosition[0] = glm::vec3(-0.5f, -0.5f, 0.0f);
+			RelativePosition[1] = glm::vec3(0.5f, -0.5f, 0.0f);
+			RelativePosition[2] = glm::vec3(0.5f, 0.5f, 0.0f);
+			RelativePosition[3] = glm::vec3(-0.5f, 0.5f, 0.0f);
+			for (int i = 0; i < 4; i++)
+			{
+				MeshCollider.m_VertexPosition[i] = Position + RelativePosition[i];
+			}
+		}
+		glm::vec3 OnUpdate(float ts, glm::vec3* velocity)
+		{
+			return MeshCollider.OnUpdate(ts, velocity);
+		}
+
+		MeshCollider2DComponent() = default;
+		MeshCollider2DComponent(const MeshCollider2DComponent&) = default;
+
+	};
+
+
+
+	////////////////////////////////////////////NativeScriptComponent/////////////////////////////
+
+	struct NativeScriptComponent
+	{
+		ScriptableEntity* Instance = nullptr;
+
+		std::function<void()> InstanceFunction;
+		std::function<void()> DestroyInstanceFunction;
+
+		std::function<void(ScriptableEntity*)> OnCreateFunction;
+		std::function<void(ScriptableEntity*)> OnDeatroyFunction;
+		std::function<void(ScriptableEntity*, Timestep)> OnUpdateFunction;
+
+		template<typename T>
+		void Bind()
+		{
+			InstanceFunction = [&]() {Instance = new T(); };
+			DestroyInstanceFunction = [&]() {delete (T*)Instance; Instance = nullptr; };
+
+			OnCreateFunction = [](ScriptableEntity* instance) {((T*)instance)->OnCreate(); };
+			OnDeatroyFunction = [](ScriptableEntity* instance) {((T*)instance)->OnDestroy(); };
+			OnUpdateFunction = [](ScriptableEntity* instance, Timestep ts) {((T*)instance)->OnUpdate(ts); };
+		}
 	};
 
 }
