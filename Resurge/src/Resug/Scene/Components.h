@@ -10,7 +10,7 @@
 #include"ScriptableEntity.h"
 
 #include"Resug/Simulation/SpringMassSystem.h"
-#include"Resug/Simulation/FEM.h"
+#include"Resug/Simulation/FiniteElementMesh2D.h"
 #include"Resug/Simulation/RigidBody.h"
 #include"Resug/Simulation/BoxCollider2D.h"
 #include"Resug/Simulation/MeshCollider2D.h"
@@ -91,12 +91,9 @@ namespace Resug
 		MeshRendererComponent() = default;
 		MeshRendererComponent(const MeshRendererComponent&) = default;
 		MeshRendererComponent(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type)
+			: Mesh(color, width, height, type)
 		{
-			Mesh.SetColor(color);
-			Mesh.SetWidth(width);
-			Mesh.SetHeight(height);
-			Mesh.SetType(type);
-			Mesh.CalculateVertexPosition();
+		
 		}
 	};
 
@@ -186,6 +183,23 @@ namespace Resug
 
 	};
 
+	struct SMS2DComponent
+	{
+		SpringMassSystem SMS;
+
+
+		SMS2DComponent() = default;
+		SMS2DComponent(const SMS2DComponent&) = default;
+	};
+
+	struct FEM2DComponent
+	{
+		FEMSystem2D FEM;
+
+
+		FEM2DComponent() = default;
+		FEM2DComponent(const FEM2DComponent&) = default;
+	};
 
 
 	////////////////////////////////////////////NativeScriptComponent/////////////////////////////

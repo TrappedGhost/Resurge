@@ -19,7 +19,6 @@ namespace Resug
 		glm::vec3 m_VertexDisplacement[4];
 		uint32_t m_VertexSize = 4;
 
-		ColliderType m_Type = ColliderType::Box2D;
 
 		bool m_OnGround = false;
 	};

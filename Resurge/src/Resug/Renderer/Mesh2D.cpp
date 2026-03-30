@@ -6,6 +6,9 @@ namespace Resug
 	Mesh2D::Mesh2D(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type)
 		:m_Color(color), m_Width(width), m_Height(height), m_Type(type)
 	{
+		CalculateVertexPosition();
+		CalculateRelative(glm::vec3(0.0f));
+
 	}
 
 	void Mesh2D::CalculateVertexPosition()
@@ -40,6 +43,7 @@ namespace Resug
 			for (int j = 0; j < m_Width; j++)
 			{
 				m_RelativePosition[i * m_Width + j] = m_VertexPosition[i * m_Width + j] - glm::vec4(position, 0.0f);
+				//std::cout << m_RelativePosition[i * m_Width + j] << "::::" << m_VertexPosition[i * m_Width + j] << "\n";
 			}
 		}
 	}

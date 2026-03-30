@@ -98,8 +98,10 @@ void EditorLayer::OnAttach()
 
     Resug::Entity squareEntity = m_ActiveScene->CreateEntity("Mesh");
 
-    squareEntity.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f }, 11, 11, Resug::Mesh2DType::Quad);
+    squareEntity.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f }, 
+        10, 10, Resug::Mesh2DType::Quad);
     squareEntity.AddComponent<Resug::MeshCollider2DComponent>();
+    squareEntity.AddComponent<Resug::FEM2DComponent>();
 
 
 

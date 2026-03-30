@@ -6,9 +6,10 @@ namespace Resug
 {
 	enum class ColliderType
 	{
-		Box2D = 0,
-		Mesh2D = 1,
-		Circle = 2
+		None = 0,
+		Box2D = 1,
+		Mesh2D = 2,
+		Circle = 3
 	};
 
 	class Collider

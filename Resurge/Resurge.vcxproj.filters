@@ -1472,7 +1472,7 @@
     </ClInclude>
     <ClInclude Include="src\Resug\Simulation\Phycisc.h" />
     <ClInclude Include="src\Resug\Simulation\SpringMassSystem.h" />
-    <ClInclude Include="src\Resug\Simulation\FEM.h" />
+    <ClInclude Include="src\Resug\Simulation\FiniteElementMesh2D.h" />
     <ClInclude Include="src\Resug\Renderer\EditerCamera.h" />
     <ClInclude Include="src\Resug\Simulation\RigidBody.h" />
     <ClInclude Include="src\Resug\Simulation\Collider.h" />
@@ -1595,5 +1595,6 @@
     <ClCompile Include="src\Resug\Simulation\BoxCollider2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\MeshCollider2D.cpp" />
     <ClCompile Include="src\Resug\Renderer\Mesh2D.cpp" />
+    <ClCompile Include="src\Resug\Simulation\FiniteElementMesh2D.cpp" />
   </ItemGroup>
 </Project>

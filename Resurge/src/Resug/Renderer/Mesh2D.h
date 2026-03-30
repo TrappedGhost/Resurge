@@ -29,6 +29,7 @@ namespace Resug
 
 		void SetVertexPosition(uint32_t x, uint32_t y, glm::vec4 position) { m_VertexPosition[y * m_Width + x] = position; }
 		glm::vec4 GetVertexPosition(uint32_t x, uint32_t y) {return m_VertexPosition[y * m_Width + x]; }
+		glm::vec4 GetVertexPosition(uint32_t x) {return m_VertexPosition[x]; }
 		glm::vec4 GetRelativePosition(uint32_t x, uint32_t y) {return m_RelativePosition[y * m_Width + x]; }
 
 		uint32_t GetWidth() const { return m_Width; }

@@ -81,6 +81,8 @@ namespace Resug
 					uint32_t unitWidth = mesh.GetWidth();
 					uint32_t unitHeight = mesh.GetHeight();
 
+					mesh.CalculateVertexPositionByRelative(transform.Position);
+					
 					for (int i = 0; i < unitHeight-1; i++)
 					{
 						for (int j = 0; j < unitWidth-1; j++)
@@ -88,7 +90,7 @@ namespace Resug
 							//glm::vec4 average = mesh.CalculateAveragePosition();
 							//transform.Position = glm::vec3(average.x, average.y, average.z);
 							//transform.RecalculateTransform();
-							mesh.CalculateRelative(glm::vec3(0.0f));
+							//mesh.CalculateRelative(glm::vec3(0.0f));
 
 							glm::vec4 l1 = mesh.GetRelativePosition(j  , i);
 							glm::vec4 r1 = mesh.GetRelativePosition(j + 1 , i);
@@ -96,6 +98,7 @@ namespace Resug
 							glm::vec4 l2 = mesh.GetRelativePosition(j  , i + 1);
 							glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
 
+							
 							//std::cout << transform << "\n";
 							//std::cout << l1<<l2<<r1<<r2 << "\n";
 							Renderer2D::DrawQuad(transform, mesh.GetColor(), QuadVertex);
@@ -143,23 +146,204 @@ namespace Resug
 					auto& render = mesherendercom.Mesh;
 					collider.SetVertexSize(render.GetHeight() * render.GetWidth());
 					uint32_t size = collider.m_VertexSize;
-					glm::vec3 velocityArray[1000];
 					for (int i = 0; i < collider.m_VertexSize; i++)
 					{
-						velocityArray[i] = glm::vec3(0.0f, 0.0f, 0.0f);
 						collider.m_VertexPosition[i] = render.m_VertexPosition[i];
 					}
 
-					//collider.OnUpdate(ts, velocityArray);
+
+					//std::cout << render.m_VertexPosition[0] << "\n";
+				});
+		}
+		///////////////SMS2DComponent//////
+		{
+			auto view = m_Registry.view<MeshRendererComponent, MeshCollider2DComponent,SMS2DComponent>();
+			view.each([&](auto entity, MeshRendererComponent& mesherendercom, MeshCollider2DComponent& meshcom, SMS2DComponent& smsCom)
+				{
+					auto& collider = meshcom.MeshCollider;
+					auto& render = mesherendercom.Mesh;
+					auto& sms = smsCom.SMS;
+
+					collider.SetVertexSize(render.GetHeight() * render.GetWidth());
+					uint32_t size = collider.m_VertexSize;
+					
+					if (size <= 0) { return; }
+					if (!sms)
+					{
+						sms.SetIntialize(true);
+						for (int i = 0; i < size; i++)
+						{
+							sms.AddPoint(render.GetVertexPosition(i));
+						}
+						uint32_t unitWidth = render.GetWidth();
+						uint32_t unitHeight = render.GetHeight();
+
+
+						for (int i = 0; i < unitHeight; i++)
+						{
+							for (int j = 0; j < unitWidth; j++)
+							{
+								
+								uint32_t index = i * unitWidth + j;
+								
+								if (j != unitWidth - 1)sms.AddSpring(index, index + 1);
+								else if (i != unitHeight - 1)sms.AddSpring(index, index + unitWidth);
+								if (j != unitWidth - 1 && i != unitHeight - 1)
+								{
+									sms.AddSpring(index, index + unitWidth + 1);
+									sms.AddSpring(index + 1 , index + unitWidth);
+								
+								}
+							}
+						}
+					}
+					for (int i = 0; i < size; i++)
+					{
+						sms.SetPointPosition(i, render.GetVertexPosition(i));
+
+						collider.m_VertexPosition[i] = render.m_VertexPosition[i];//TODO:改成函数
+					}
+
+
+					glm::vec3 velocityArray[10000];
+					for (int i = 0; i < 10; i++)
+					{
+						sms.OnUpdate(ts);
+				
+						for (int i = 0; i < collider.m_VertexSize; i++)
+						{
+							velocityArray[i] = sms.GetPointVelocity(i);
+						}
+
+						collider.OnUpdate(ts, velocityArray);
+
+						for (int i = 0; i < size; i++)
+						{
+							sms.SetPointPosition(i, collider.GetVertexPosition(i));
+						}
+					}
+
 
 					for (int i = 0; i < collider.m_VertexSize; i++)
 					{
-						render.m_VertexPosition[i] = glm::vec4(collider.m_VertexPosition[i],1.0f);
+						render.m_VertexPosition[i] = glm::vec4(collider.m_VertexPosition[i], 1.0f);
 					}
-
+					//std::cout << render.m_VertexPosition[0] << "\n";
 				});
 		}
 
+		///////////////FEM2DComponent//////
+		{
+			auto view = m_Registry.view<MeshRendererComponent, MeshCollider2DComponent, FEM2DComponent>();
+			view.each([&](auto entity, MeshRendererComponent& mesherendercom, MeshCollider2DComponent& meshcom, FEM2DComponent& femCom)
+				{
+					auto& collider = meshcom.MeshCollider;
+					auto& render = mesherendercom.Mesh;
+					auto& fem = femCom.FEM;
+
+					collider.SetVertexSize(render.GetHeight() * render.GetWidth());
+					uint32_t size = collider.m_VertexSize;
+					if (size <= 0) { return; }
+
+					if (!fem)
+					{
+						std::cout << "INit\n";
+						fem.SetInitialize(true);
+
+						// 1. 添加节点
+						for (int i = 0; i < size; i++)
+						{
+							glm::vec4 pos4 = render.GetVertexPosition(i);
+							fem.AddNode(glm::vec2(pos4.x, pos4.y));
+						}
+
+						uint32_t unitWidth = render.GetWidth();
+						uint32_t unitHeight = render.GetHeight();
+
+						// 2. 添加三角形
+						for (int i = 0; i < unitHeight - 1; i++)
+						{
+							for (int j = 0; j < unitWidth - 1; j++)
+							{
+								uint32_t A = i * unitWidth + j;
+								uint32_t B = i * unitWidth + (j + 1);
+								uint32_t C = (i + 1) * unitWidth + j;
+								uint32_t D = (i + 1) * unitWidth + (j + 1);
+
+								// 稍微降低初始刚度以防万一，或者确保子步够多
+								fem.AddTriangle(A, B, C, 5000.0f, 0.3f);
+								fem.AddTriangle(B, D, C, 5000.0f, 0.3f);
+							}
+						}
+
+						// 3. 【核心修复】强制刷新参考构型
+						// 必须确保 FEM 内部记录的“初始形状”与“当前形状”完全一致
+						for (auto& elem : fem.m_Elements)
+						{
+							const FEMNode& n0 = fem.m_Nodes[elem.NodeIndices[0]];
+							const FEMNode& n1 = fem.m_Nodes[elem.NodeIndices[1]];
+							const FEMNode& n2 = fem.m_Nodes[elem.NodeIndices[2]];
+
+							glm::mat2 Dm(n1.Position - n0.Position, n2.Position - n0.Position);
+							// 使用 abs 防止顶点顺序导致的负面积
+							elem.ReferenceArea = 0.5f * std::abs(glm::determinant(Dm));
+
+							if (std::abs(elem.ReferenceArea) > 1e-6f) {
+								elem.InverseReferenceMatrix = glm::inverse(Dm);
+							}
+						}
+					}
+
+					// 4. 同步位置 (如果是从外部同步)
+					for (int i = 0; i < size; i++)
+					{
+						glm::vec4 pos4 = render.GetVertexPosition(i);
+						fem.SetNodePosition(i, glm::vec2(pos4.x, pos4.y));
+						collider.m_VertexPosition[i] = render.m_VertexPosition[i];
+					}
+
+					// 5. 物理更新
+					glm::vec3 velocityArray[10000];
+					int subSteps = 10; // 如果还爆炸，增加到 20
+					float dt = ts;
+					//dt /= 10.0f;
+					for (int s = 0; s < subSteps; s++)
+					{
+						fem.ComputeForces();
+						fem.Integrate(dt / subSteps);
+
+						for (int i = 0; i < size; i++)
+						{
+							glm::vec2 femVel = fem.GetNodeVelocity(i);
+							velocityArray[i] = glm::vec3(femVel.x, femVel.y, 0.0f);
+						}
+						collider.OnUpdate(ts, velocityArray);
+
+						for (int i = 0; i < size; i++)
+						{
+							fem.SetNodePosition(i, collider.GetVertexPosition(i));
+						}
+
+					}
+
+					// 6. 回写数据
+					//for (int i = 0; i < size; i++)
+					//{
+					//	glm::vec2 femPos = fem.GetNodePosition(i);
+					//	glm::vec2 femVel = fem.GetNodeVelocity(i);
+
+					//	collider.m_VertexPosition[i] = glm::vec3(femPos.x, femPos.y, 0.0f);
+					//	velocityArray[i] = glm::vec3(femVel.x, femVel.y, 0.0f);
+					//}
+
+					//collider.OnUpdate(ts, velocityArray);
+
+					for (int i = 0; i < size; i++)
+					{
+						render.m_VertexPosition[i] = glm::vec4(collider.m_VertexPosition[i], 1.0f);
+					}
+				});
+		}
 	}
 
 	void Scene::OnUpdateRuntime(Timestep ts)
@@ -226,12 +410,18 @@ namespace Resug
 							transform.RecalculateTransform();
 							mesh.CalculateRelative(transform.Position);
 
-							glm::vec4 l1 = mesh.GetRelativePosition(j, i);
-							glm::vec4 r1 = mesh.GetRelativePosition(j + 1, i);
-							glm::vec4 r2 = mesh.GetRelativePosition(j + 1, i + 1);
-							glm::vec4 l2 = mesh.GetRelativePosition(j, i + 1);
-							glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
-							Renderer2D::DrawQuad(transform, mesh.GetColor(), QuadVertex);
+							glm::vec4 v00 = mesh.GetRelativePosition(j, i);
+							glm::vec4 v10 = mesh.GetRelativePosition(j + 1, i);
+							glm::vec4 v11 = mesh.GetRelativePosition(j + 1, i + 1);
+							glm::vec4 v01 = mesh.GetRelativePosition(j, i + 1);
+
+							// 渲染三角形1 (v00, v10, v01)
+							glm::vec4 tri1[3] = { v00, v10, v01 };
+							Renderer2D::DrawTriangle(transform, mesh.GetColor(), tri1);
+
+							// 渲染三角形2 (v10, v11, v01)
+							glm::vec4 tri2[3] = { v10, v11, v01 };
+							Renderer2D::DrawTriangle(transform, mesh.GetColor(), tri2);
 						}
 					}
 				});

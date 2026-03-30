@@ -9,17 +9,18 @@ namespace Resug
 	{
 		Collider::Colliders.push_back(this);
 		m_Type = ColliderType::Mesh2D;
+
 	}
 	glm::vec3 MeshCollider2D::OnUpdate(float ts, glm::vec3* vertexVelocity)
 	{
-
-		bool isCollide = false;
 
 		for (int i = 0; i < m_VertexSize; i++)
 		{
 			m_VertexVelocity[i] = vertexVelocity[i];
 			m_VertexDisplacement[i] = m_VertexVelocity[i] * ts;
+			//std::cout << m_VertexVelocity[i] << " ";
 		}
+		//std::cout << "\n";
 		int n = Collider::Colliders.size();
 		if (n > 1)
 		{
@@ -38,7 +39,9 @@ namespace Resug
 							collider->m_VertexPosition,
 							collider->m_VertexSize))
 						{
-							isCollide = true;
+							
+							m_VertexDisplacement[j] = glm::vec3(0.0f);
+							m_VertexVelocity[j] = glm::vec3(0.0f);
 						}
 					}
 				}
@@ -48,24 +51,15 @@ namespace Resug
 		{
 			if ((m_VertexPosition[i] + m_VertexDisplacement[i]).y < Ground)
 			{
-				isCollide = true;
-			}
-		}
-		if (isCollide)
-		{
-			for (int i = 0; i < m_VertexSize; i++)
-			{
 				m_VertexDisplacement[i] = glm::vec3(0.0f);
 				m_VertexVelocity[i] = glm::vec3(0.0f);
 			}
 		}
-		else
+		for (int i = 0; i < m_VertexSize; i++)
 		{
-			for (int i = 0; i < m_VertexSize; i++)
-			{
-				m_VertexPosition[i] += m_VertexDisplacement[i];
-			}
+			m_VertexPosition[i] += m_VertexDisplacement[i];
 		}
+
 
 		return glm::vec3();
 	}

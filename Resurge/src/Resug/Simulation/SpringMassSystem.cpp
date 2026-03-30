@@ -16,6 +16,7 @@ namespace Resug
 
     void Resug::SpringMassSystem::OnUpdate(Timestep& ts)
     {
+       
         ComputeForces();
 
         IntegrateVerlet(ts);
@@ -30,10 +31,8 @@ namespace Resug
 
         for (auto& point : m_Points)
         {
-            if (!point.Fixed)
-            {
-                point.Force += m_Gravity * point.Mass;
-            }
+            point.Force += m_Gravity * point.Mass;
+            
         }
 
         for (const auto& spring : m_Springs)
@@ -48,16 +47,12 @@ namespace Resug
             {
                 dir /= currentLength;  
 
-                float forceMagnitude = spring.Stiffness * (currentLength - spring.RestLength);
+                float forceMagnitude = spring.Stiffness * (currentLength - spring.RestLength)*100;
+                
                 glm::vec3 springForce = dir * forceMagnitude;
-
-
-                ///TODO: 添加阻尼力
-
-                if (!a.Fixed)
-                    a.Force += springForce ;
-                if (!b.Fixed)
-                    b.Force -= springForce ;
+                //std::cout << dir << "\n ";
+                a.Force += springForce;
+                b.Force -= springForce;
             }
         }
 
@@ -66,30 +61,14 @@ namespace Resug
     void Resug::SpringMassSystem::IntegrateVerlet(float dt)
     {
         dt /= 10.0f;
-        float groundY = -3.0f;  
-        float restitution = 1.0f;  
 
         for (auto& point : m_Points)
         {
-            if (point.Fixed) continue;
 
-            // Verlet积分
             glm::vec3 acceleration = point.Force / point.Mass;
-            glm::vec3 newPosition = point.Position + (point.Position - point.PrevPosition) + acceleration * dt * dt;
 
-            // 更新速度
-            point.Velocity = (newPosition - point.Position) / dt;
+            point.Velocity += acceleration* dt;
 
-            // 更新位置
-            point.PrevPosition = point.Position;
-            point.Position = newPosition;
-
-            // 地面碰撞检测
-            if (point.Position.y < groundY)
-            {
-                point.Position.y = groundY + (groundY - point.Position.y) * restitution;
-                point.Velocity.y = -point.Velocity.y * restitution;
-            }
         }
     }
 }

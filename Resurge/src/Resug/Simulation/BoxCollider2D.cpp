@@ -7,8 +7,8 @@ namespace Resug
 
 	BoxCollider2D::BoxCollider2D()
 	{
-		Collider::Colliders.push_back(this);
 		m_Type = ColliderType::Box2D;
+		Collider::Colliders.push_back(this);
 	}
 
 	glm::vec3 BoxCollider2D::OnUpdate(float ts, glm::vec3 velocity)
@@ -26,9 +26,9 @@ namespace Resug
 		{
 			for (int i = 0; i < n; i++)
 			{
+
 				if (this == Collider::Colliders[i])
 					continue;
-
 				if (Collider::Colliders[i]->m_Type == ColliderType::Box2D)
 				{
 					BoxCollider2D* collider = (BoxCollider2D*)Collider::Colliders[i];

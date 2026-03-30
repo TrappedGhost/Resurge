@@ -13,6 +13,7 @@ namespace Resug
 
 		void SetVertexSize(uint32_t size) { m_VertexSize = size; }
 
+		glm::vec3 GetVertexPosition(uint32_t x) { return m_VertexPosition[x]; }
 
 
 
@@ -21,8 +22,6 @@ namespace Resug
 		glm::vec3 m_VertexVelocity[10000];
 		glm::vec3 m_VertexDisplacement[10000];
 		uint32_t m_VertexSize = 0;
-
-		ColliderType m_Type = ColliderType::Box2D;
 
 		bool m_OnGround = false;
 	};

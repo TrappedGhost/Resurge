@@ -26,7 +26,7 @@ namespace Resug {
         float Stiffness;
         float Damping;
 
-        Spring(int a, int b, float restLength, float stiffness = 100.0f, float damping = 1.0f)
+        Spring(int a, int b, float restLength, float stiffness = 10000.0f, float damping = 1.0f)
             : PointA(a), PointB(b), RestLength(restLength)
             , Stiffness(stiffness), Damping(damping)
         {
@@ -44,6 +44,10 @@ namespace Resug {
         {
             m_Points.emplace_back(position, mass, fixed);
         }
+        void AddPoint(const glm::vec4& position, float mass = 1.0f, bool fixed = false)
+        {
+            m_Points.emplace_back(glm::vec3(position), mass, fixed);
+        }
 
         void AddSpring(int a, int b, float stiffness = 100.0f, float damping = 1.0f)
         {
@@ -51,21 +55,34 @@ namespace Resug {
             m_Springs.emplace_back(a, b, restLength, stiffness, damping);
         }
 
-        glm::vec4 GetPoint(int i)
+        void SetPointPosition(int i, glm::vec3 position)
         {
-            return glm::vec4(m_Points[i].Position, 1.0f);
+            m_Points[i].Position = position;
         }
+        void SetPointPosition(int i, glm::vec4 position)
+        {
+            m_Points[i].Position = position;
+        }
+        glm::vec4 GetPointPosition(int i){return glm::vec4(m_Points[i].Position, 1.0f);}
+        glm::vec4 GetPointVelocity(int i){return glm::vec4(m_Points[i].Velocity, 1.0f);}
+        glm::vec4 GetPointForcef4(int i){ return glm::vec4(m_Points[i].Force, 1.0f);        }
+        glm::vec3 GetPointForcef3(int i){ return glm::vec3(m_Points[i].Force);        }
+
+        bool GetIntialize() { return isIntialize; }
+        void SetIntialize(bool bo) { isIntialize = bo; }
 
         void OnAttach();
 
         void OnUpdate(Timestep& ts);
 
-        
+        operator bool() { return isIntialize; }
     private:
         void ComputeForces();
         
         void IntegrateVerlet(float dt);
     private:
+        bool isIntialize = false;
+
         std::vector<MassPoint> m_Points;
         std::vector<Spring> m_Springs;
         glm::vec3 m_Gravity = glm::vec3(0.0f, -9.8f, 0.0f);
