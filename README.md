@@ -1,1 +1,6 @@
 # Resurge
+点击 scripts/Win-GenerateProject.bat 生成sln文件。
+
+还有很多bug.......
+ui还没写完......
+
