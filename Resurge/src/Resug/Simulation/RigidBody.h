@@ -8,33 +8,33 @@ namespace Resug
 
 		void CalculateForce();
 		void CalculateAcceleration();
-		void CalculateVelocity(float ts);
+		void CalculateVelocity(double ts);
 
-		glm::vec3 GetDisplacement(float ts);
+		glm::dvec3 GetDisplacement(double ts);
 
 
-		const glm::vec3 GetVelocity() { return Velocity; }
-		const float GetVelocityX() { return Velocity.x; }
-		const float GetVelocityY() { return Velocity.y; }
-		const float GetVelocityZ() { return Velocity.z; }
-		const glm::vec3 GetAcceleration() { return Acceleration; }
-		const glm::vec3 GetForce() { return Force; }
-		const float GetMass() { return Mass; }
+		const glm::dvec3 GetVelocity() { return Velocity; }
+		const double GetVelocityX() { return Velocity.x; }
+		const double GetVelocityY() { return Velocity.y; }
+		const double GetVelocityZ() { return Velocity.z; }
+		const glm::dvec3 GetAcceleration() { return Acceleration; }
+		const glm::dvec3 GetForce() { return Force; }
+		const double GetMass() { return Mass; }
 
-		void SetVelocity(glm::vec3 v) {  Velocity = v; }
-		void SetVelocityX(float v) {  Velocity.x = v; }
-		void SetVelocityY(float v) {  Velocity.y = v; }
-		void SetVelocityZ(float v) {  Velocity.z = v; }
-		void SetAcceleration(glm::vec3 a) {  Acceleration = a; }
-		void SetForce(glm::vec3 f) {  Force = f; }
-		void SetMass(float m) {  Mass = m; }
+		void SetVelocity(glm::dvec3 v) {  Velocity = v; }
+		void SetVelocityX(double v) {  Velocity.x = v; }
+		void SetVelocityY(double v) {  Velocity.y = v; }
+		void SetVelocityZ(double v) {  Velocity.z = v; }
+		void SetAcceleration(glm::dvec3 a) {  Acceleration = a; }
+		void SetForce(glm::dvec3 f) {  Force = f; }
+		void SetMass(double m) {  Mass = m; }
 
 	private:
-		glm::vec3 Velocity = glm::vec3(0.0f);
-		glm::vec3 Acceleration = glm::vec3(0.0f);
-		glm::vec3 Force = glm::vec3(0.0f);
+		glm::dvec3 Velocity = glm::dvec3(0.0f);
+		glm::dvec3 Acceleration = glm::dvec3(0.0f);
+		glm::dvec3 Force = glm::dvec3(0.0f);
 
-		float Mass = 1.0f;
+		double Mass = 1.0f;
 
 	}; 
 }

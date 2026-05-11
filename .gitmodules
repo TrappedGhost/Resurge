@@ -7,15 +7,12 @@
 [submodule "Resurge/vendor/imgui"]
 	path = Resurge/vendor/imgui
 	url = https://github.com/TheCherno/imgui
-[submodule "Resurge/vendor/glm"]
-	path = Resurge/vendor/glm
-	url = http://github.com/icaven/glm
 [submodule "Resurge/vendor/yaml-cpp"]
 	path = Resurge/vendor/yaml-cpp
 	url = https://github.com/thecherno/yaml-cpp
 [submodule "Resurge/vender/ImGuizmo"]
 	path = Resurge/vender/ImGuizmo
 	url = https://github.com/thecherno/imguizmo
-[submodule "Resurge/vendor/ImGuizmo"]
-	path = Resurge/vendor/ImGuizmo
-	url = https://github.com/thecherno/imguizmo
+[submodule "Resurge/vendor/glm"]
+	path = Resurge/vendor/glm
+	url = https://github.com/g-truc/glm.git

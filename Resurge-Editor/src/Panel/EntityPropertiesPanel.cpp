@@ -50,6 +50,17 @@ namespace Resug
                 entity.AddComponent<BoxCollider2DComponent>();
                 ImGui::CloseCurrentPopup();
             }
+            if (ImGui::MenuItem("Mesh2DComponent"))
+            {
+                entity.AddComponent<Mesh2DComponent>(3, 3, Resug::Mesh2DType::Quad);
+                ImGui::CloseCurrentPopup();
+            }
+     
+            if (ImGui::MenuItem("SMS2DComponent"))
+            {
+                entity.AddComponent<SMS2DComponent>();
+                ImGui::CloseCurrentPopup();
+            }
             ImGui::EndPopup();
         }
 
@@ -93,11 +104,11 @@ namespace Resug
             if(treeNode)
             {
                 auto& transform = m_Entity.GetComponent<TransformComponent>();
-                if (ImGui::DragFloat3("Position", glm::value_ptr(transform.Position), 0.1f))
+                if (ImGui::DragScalarN("Position", ImGuiDataType_Double, glm::value_ptr(transform.Position), 3, 0.1f, NULL, NULL, "%.3f"))
                     transform.RecalculateTransform();
-                if (ImGui::DragFloat3("Rotation", glm::value_ptr(transform.Rotation), 0.1f))
+                if (ImGui::DragScalarN("Rotation", ImGuiDataType_Double, glm::value_ptr(transform.Rotation), 3, 0.1f, NULL, NULL, "%.3f"))
                     transform.RecalculateTransform();
-                if (ImGui::DragFloat3("Scale", glm::value_ptr(transform.Scale), 0.1f))
+                if (ImGui::DragScalarN("Scale", ImGuiDataType_Double, glm::value_ptr(transform.Scale), 3, 0.1f, NULL, NULL, "%.3f"))
                     transform.RecalculateTransform();
 
                     ImGui::TreePop();
@@ -201,6 +212,8 @@ namespace Resug
                 m_Entity.RemoveComponent<SpriteRendererComponent>();
         }
 
+    
+
         //RigidBody/////////////////////////////
         if (m_Entity.HasComponent<RigidBodyComponent>())
         {
@@ -246,7 +259,7 @@ namespace Resug
         {
             bool componentShouldDelete = false;
 
-            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(BoxCollider2DComponent).hash_code(), treeFlag, "RigidBodyComponent"));
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(BoxCollider2DComponent).hash_code(), treeFlag, "BoxCollider2DComponent"));
             ImGui::SameLine();
             if (ImGui::Button("Component Setting"))
                 ImGui::OpenPopup("ComponentSetting");
@@ -258,15 +271,69 @@ namespace Resug
             }
             if (treeNode)
             {
-                ImGui::TreePop();
 
                 auto& collCom = m_Entity.GetComponent<BoxCollider2DComponent>();
                 auto& collider = collCom.BoxCollider;
+                ImGui::TreePop();
 
             }
 
             if (componentShouldDelete)
                 m_Entity.RemoveComponent<BoxCollider2DComponent>();
+        }
+        ////////////////////Mesh2DComponent/////////////////////////////
+        if (m_Entity.HasComponent<Mesh2DComponent>())
+        {
+            bool componentShouldDelete = false;
+
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(Mesh2DComponent).hash_code(), treeFlag, "MeshRendererComponent"));
+            ImGui::SameLine();
+            if (ImGui::Button("Component Setting"))
+                ImGui::OpenPopup("ComponentSetting");
+            if (ImGui::BeginPopup("ComponentSetting"))
+            {
+                if (ImGui::MenuItem("Delete Component"))
+                    componentShouldDelete = true;
+                ImGui::EndPopup();
+            }
+            if (treeNode)
+            {
+
+                auto& mesh = m_Entity.GetComponent<Mesh2DComponent>().Mesh;
+
+                ImGui::TreePop();
+            }
+
+            if (componentShouldDelete)
+                m_Entity.RemoveComponent<Mesh2DComponent>();
+        }
+
+        ////////////////////SMS2DComponent/////////////////////////////
+        if (m_Entity.HasComponent<SMS2DComponent>())
+        {
+            bool componentShouldDelete = false;
+
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(SMS2DComponent).hash_code(), treeFlag, "SMS2DComponent"));
+            ImGui::SameLine();
+            if (ImGui::Button("Component Setting"))
+                ImGui::OpenPopup("ComponentSetting");
+            if (ImGui::BeginPopup("ComponentSetting"))
+            {
+                if (ImGui::MenuItem("Delete Component"))
+                    componentShouldDelete = true;
+                ImGui::EndPopup();
+            }
+
+            if (treeNode)
+            {
+                ImGui::TreePop();
+
+                auto& collCom = m_Entity.GetComponent<SMS2DComponent>();
+
+            }
+
+            if (componentShouldDelete)
+                m_Entity.RemoveComponent<SMS2DComponent>();
         }
     }
 }

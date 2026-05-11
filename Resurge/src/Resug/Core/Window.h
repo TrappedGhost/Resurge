@@ -12,7 +12,7 @@ namespace Resug
 		uint Width;
 		uint Height;
 
-		WindowProps(const std::string& title = "Resug Ebgine",
+		WindowProps(const std::string& title = "Resug Engine",
 					uint width = 1280,
 					uint height = 720)
 			:Title(title),Width(width),Height(height){ }

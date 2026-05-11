@@ -17,7 +17,7 @@ namespace Resug
 		{
 			s_RendererAPI->SetViewport(x, y, width, height);
 		}
-		inline static void SetClearColor(const glm::vec4 color)
+		inline static void SetClearColor(const glm::dvec4 color)
 		{
 			s_RendererAPI->SetClearColor(color);
 		}
@@ -31,9 +31,9 @@ namespace Resug
 			s_RendererAPI->Flush();
 		}
 
-		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray,const uint32_t count = 0)
+		inline static void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, RenderType type, const uint32_t count = 0)
 		{
-			s_RendererAPI->DrawIndexed(vertexArray, count);
+			s_RendererAPI->DrawIndexed(vertexArray, type, count);
 		}
 	private:
 		static RendererAPI* s_RendererAPI;

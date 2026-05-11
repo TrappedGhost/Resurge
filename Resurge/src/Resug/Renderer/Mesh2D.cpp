@@ -3,64 +3,58 @@
 
 namespace Resug
 {
-	Mesh2D::Mesh2D(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type)
-		:m_Color(color), m_Width(width), m_Height(height), m_Type(type)
+	Mesh2D::Mesh2D(uint32_t width, uint32_t height, Mesh2DType type)
+		: m_Width(width), m_Height(height), m_Type(type)
 	{
-		CalculateVertexPosition();
-		CalculateRelative(glm::vec3(0.0f));
-
+		if (type == Mesh2DType::Quad)
+		{
+			CalculateQuadVertexPosition();
+		}
 	}
 
-	void Mesh2D::CalculateVertexPosition()
+	Mesh2D::Mesh2D( uint32_t width, uint32_t height, Mesh2DType type, MeshRenderType renderType)
+		: m_Width(width), m_Height(height), m_Type(type), m_RenderType(renderType)
 	{
-		float unitWidth = m_Length.x / (m_Width - 1);
-		float unitHeight = m_Length.y / (m_Height - 1);
+		if (type == Mesh2DType::Quad)
+		{
+			CalculateQuadVertexPosition();
+		}
+		if (type == Mesh2DType::Line)
+		{
+			m_Length = 3.0f;
+			for (int i = 0; i < m_Height; i++)
+			{
+				m_VertexPosition[i] = glm::dvec4(0.0f, float(i) / float(m_Height - 1) * m_Length, 0.0f, 1.0f);
+			}
+		}
+	}
+
+	Mesh2D::Mesh2D(uint32_t length, uint32_t indexNumber, glm::dvec3 dir, Mesh2DType type, MeshRenderType renderType)
+		: m_Width(1), m_Height(indexNumber), m_Type(type), m_RenderType(renderType)
+	{
+		if (type == Mesh2DType::Line)
+		{
+			m_Length = length;
+
+			for (int i = 0; i < indexNumber; i++)
+			{
+				m_VertexPosition[i] = glm::dvec4(dir * (double(i) / double(indexNumber - 1)) * m_Length, 1.0f);
+			}
+		}
+	}
+
+	void Mesh2D::CalculateQuadVertexPosition()
+	{
+		float unitWidth = 1.0f / (m_Width - 1);
+		float unitHeight = 1.0f / (m_Height - 1);
 
 		for (int i = 0; i < m_Height; i++)
 		{
 			for (int j = 0; j < m_Width; j++)
 			{
-				m_VertexPosition[i * m_Width + j] = glm::vec4(unitWidth * j, unitHeight * i, 0.0f, 1.0f);
+				m_VertexPosition[i * m_Width + j] = glm::dvec4(unitWidth * j, unitHeight * i, 0.0f, 1.0f);
 			}
 		}
 	}
 
-	void Mesh2D::CalculateVertexPositionByRelative(glm::vec3 position)
-	{
-		for (int i = 0; i < m_Height; i++)
-		{
-			for (int j = 0; j < m_Width; j++)
-			{
-				m_VertexPosition[i * m_Width + j] = m_RelativePosition[i * m_Width + j] + glm::vec4(position, 0.0f);
-			}
-		}
-	}
-
-	void Mesh2D::CalculateRelative(glm::vec3 position)
-	{
-		for (int i = 0; i < m_Height; i++)
-		{
-			for (int j = 0; j < m_Width; j++)
-			{
-				m_RelativePosition[i * m_Width + j] = m_VertexPosition[i * m_Width + j] - glm::vec4(position, 0.0f);
-				//std::cout << m_RelativePosition[i * m_Width + j] << "::::" << m_VertexPosition[i * m_Width + j] << "\n";
-			}
-		}
-	}
-
-	glm::vec4 Mesh2D::CalculateAveragePosition()
-	{
-		glm::vec4 averagePosition = glm::vec4(0.0f);
-		for (int i = 0; i < m_Height; i++)
-		{
-			for (int j = 0; j < m_Width; j++)
-			{
-				averagePosition += m_VertexPosition[i * m_Width + j];
-			}
-		}
-
-		averagePosition /= m_Height * m_Width;
-
-		return averagePosition;
-	}
 }

@@ -4,7 +4,9 @@
 
 #include"Resug/Core/Input.h"
 
-#include<glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>  
+
+
 namespace Resug
 {
 	EditerCamera::EditerCamera()
@@ -12,7 +14,7 @@ namespace Resug
 		RecalculateProjection();
 		RecalculateTransform();
 	}
-	EditerCamera::EditerCamera(glm::mat4 projection)
+	EditerCamera::EditerCamera(glm::dmat4 projection)
 	{
 		RecalculateProjection();
 		RecalculateTransform();
@@ -22,10 +24,10 @@ namespace Resug
 		if (Input::IsMouseButtonPressed(RG_MOUSE_BUTTON_MIDDLE))
 		{
 
-			glm::vec2 currentMousePosition = glm::vec2(Input::GetMousePosition().first, Input::GetMousePosition().second);
-			glm::vec2 Displacement = (currentMousePosition - m_PreMousePosition)/50.0f;
-			m_CameraPosition += glm::vec3(Displacement.x, -Displacement.y, 0.0f);
-			
+			glm::dvec2 currentMousePosition = glm::dvec2(Input::GetMousePosition().first, Input::GetMousePosition().second);
+			glm::dvec2 Displacement = (currentMousePosition - m_PreMousePosition) / 50.0;
+			m_CameraPosition += glm::dvec3(Displacement.x, -Displacement.y, 0.0);
+
 			RecalculateTransform();
 
 			m_PreMousePosition = currentMousePosition;
@@ -34,10 +36,10 @@ namespace Resug
 		}
 		else
 		{
-			m_PreMousePosition = glm::vec2(Input::GetMousePosition().first, Input::GetMousePosition().second);
+			m_PreMousePosition = glm::dvec2(Input::GetMousePosition().first, Input::GetMousePosition().second);
 		}
 	}
-	void EditerCamera::SetOrth(float size, float nearC, float farC)
+	void EditerCamera::SetOrth(double size, double nearC, double farC)
 	{
 		m_CameraSize = size;
 		m_CameraNear = nearC;
@@ -53,16 +55,16 @@ namespace Resug
 	}
 	void EditerCamera::RecalculateProjection()
 	{
-		float orthoLefft = -m_CameraSize * m_AspectRatio * 0.5f;
-		float orthoRight = m_CameraSize * m_AspectRatio * 0.5f;
-		float orthoBottom = -m_CameraSize * 0.5f;
-		float orthoTop = m_CameraSize * 0.5f;
+		double orthoLefft = -m_CameraSize * m_AspectRatio * 0.5;
+		double orthoRight = m_CameraSize * m_AspectRatio * 0.5;
+		double orthoBottom = -m_CameraSize * 0.5;
+		double orthoTop = m_CameraSize * 0.5;
 
 		m_Projection = glm::ortho(orthoLefft, orthoRight, orthoBottom, orthoTop, m_CameraNear, m_CameraFar);
 
 	}
 	void EditerCamera::RecalculateTransform()
 	{
-		m_CameraTransform = glm::translate(glm::mat4(1.0f), m_CameraPosition);
+		m_CameraTransform = glm::translate(glm::dmat4(1.0), m_CameraPosition);
 	}
 }

@@ -33,6 +33,31 @@ namespace YAML {
 	};
 
 	template<>
+	struct convert<glm::dvec3>
+	{
+		static Node encode(const glm::dvec3& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.SetStyle(EmitterStyle::Flow);  // 设置为流式风格 [x, y, z]
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::dvec3& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 3)
+				return false;
+        
+			rhs.x = node[0].as<double>();
+			rhs.y = node[1].as<double>();
+			rhs.z = node[2].as<double>();
+			return true;
+		}
+	};
+
+	template<>
 	struct convert<glm::vec4>
 	{
 		static Node encode(const glm::vec4& rhs)
@@ -59,16 +84,53 @@ namespace YAML {
 		}
 	};
 
+	template<>
+	struct convert<glm::dvec4>
+	{
+		static Node encode(const glm::dvec4& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.push_back(rhs.w);
+			node.SetStyle(EmitterStyle::Flow);  // 设置为流式风格 [x, y, z, w]
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::dvec4& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 4)
+				return false;
+
+			rhs.x = node[0].as<double>();
+			rhs.y = node[1].as<double>();
+			rhs.z = node[2].as<double>();
+			rhs.w = node[3].as<double>();
+			return true;
+		}
+	};
+
 }
 
 namespace Resug
 {
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 	{
-		return out <<YAML::BeginSeq<< v.x << v.y << v.z <<YAML::EndSeq ;
+		return out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
 	}
 
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& v)
+	{
+		return out << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
+	}
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::dvec3& v)
+	{
+		return out <<YAML::BeginSeq<< v.x << v.y << v.z <<YAML::EndSeq ;
+	}
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::dvec4& v)
 	{
 		return out << YAML::BeginSeq << v.x << v.y << v.z<<v.w << YAML::EndSeq;
 	}
@@ -210,11 +272,11 @@ namespace Resug
 					auto tfNode = entityNode["TransformComponent"];
 
 					if (tfNode["Position"])
-						transform.Position = tfNode["Position"].as<glm::vec3>();
+						transform.Position = tfNode["Position"].as<glm::dvec3>();
 					if (tfNode["Rotation"])
-						transform.Rotation = tfNode["Rotation"].as<glm::vec3>();
+						transform.Rotation = tfNode["Rotation"].as<glm::dvec3>();
 					if (tfNode["Scale"])
-						transform.Scale = tfNode["Scale"].as<glm::vec3>();
+						transform.Scale = tfNode["Scale"].as<glm::dvec3>();
 
 					transform.RecalculateTransform();
 				}
@@ -243,15 +305,15 @@ namespace Resug
 				if (entityNode["SpriteRendererComponent"] )
 				{
 					auto& sprite = entity.AddComponent<SpriteRendererComponent>();
-					sprite.Color = entityNode["SpriteRendererComponent"]["Color"].as<glm::vec4>();
+					sprite.Color = entityNode["SpriteRendererComponent"]["Color"].as<glm::dvec4>();
 				}
 
 				if (entityNode["RigidBodyComponent"])
 				{
 					auto& rb = entity.AddComponent<RigidBodyComponent>();
-					rb.rb.SetVelocity ( entityNode["RigidBodyComponent"]["RigidBodyVelocity"].as<glm::vec3>());
-					rb.rb.SetAcceleration( entityNode["RigidBodyComponent"]["RigidBodyAcceleration"].as<glm::vec3>());
-					rb.rb.SetForce ( entityNode["RigidBodyComponent"]["RigidBodyForce"].as<glm::vec3>());
+					rb.rb.SetVelocity ( entityNode["RigidBodyComponent"]["RigidBodyVelocity"].as<glm::dvec3>());
+					rb.rb.SetAcceleration( entityNode["RigidBodyComponent"]["RigidBodyAcceleration"].as<glm::dvec3>());
+					rb.rb.SetForce ( entityNode["RigidBodyComponent"]["RigidBodyForce"].as<glm::dvec3>());
 					rb.rb.SetMass ( entityNode["RigidBodyComponent"]["RigidBodyMass"].as<float>());
 				}
 

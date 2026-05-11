@@ -20,15 +20,17 @@ namespace Resug
 
 		static void InitCircle();
 		static void InitTriangle();
+		static void InitLine();
 
-		static void BeginScene(Camera& camera, glm::mat4 transform);
-		static void BeginScene(glm::mat4 projection, glm::mat4 transform);
+		static void BeginScene(Camera& camera, glm::dmat4 transform);
+		static void BeginScene(glm::dmat4 projection, glm::dmat4 transform);
 		static void BeginScene(OrthographicCamera& camera);
-		static void BeginScene(glm::mat4 viewprojection);
+		static void BeginScene(glm::dmat4 viewprojection);
 
 		static void EndScene();
 		static void Flush();
 		static void FlushTriangles();
+		static void FlushLines();
 		
 		static void FlushAndReset();
 
@@ -55,38 +57,21 @@ namespace Resug
 
 
 		//Triangle
-		struct TriangleProperty
-		{
-			glm::vec3 Position = glm::vec3 (0.0f);
-			glm::vec3 Size = glm::vec3(1.0f);
-			glm::vec3 Rotation = glm::vec3(0.0f);
-			glm::mat4 Transform = glm::mat4(1.0f);
-			glm::vec4 Color = glm::vec4(1.0f);
-
-			uint32_t TextureIndex = 0;
-			float TexZoomLevel = 1.0f;
-			glm::vec4 TintColor = glm::vec4(1.0f);
-
-			glm::vec3 VertexRelativePosition[3];
-
-			TriangleProperty() = default;
-			TriangleProperty(glm::mat4 transform,glm::vec4 color)
-				:Transform(transform), Color(color)
-			{ }
-
-		};
-		static void DrawTriangle(TriangleProperty pro);
 		static void DrawTriangle(glm::mat4 transform, glm::vec4 color);
 		static void DrawTriangle(glm::mat4 transform, glm::vec4 color, glm::vec4* vertexPosition);
 
+		//Line
+		static void DrawLine(glm::mat4 transform, glm::vec4 color, glm::vec4 vertexPosition1, glm::vec4 vertexPosition2);
 
 		//Stats;
 		struct Statistics
 		{
 			uint32_t DrawCalls = 0;
 			uint32_t QuadCount = 0;
-			uint32_t GetTotalVertexCount() { return QuadCount * 4; }
-			uint32_t GetTotalIndexCount() { return QuadCount * 6; }
+			uint32_t TriangleCount = 0;
+			uint32_t LineCount = 0;
+			uint32_t GetTotalVertexCount() { return QuadCount * 4 + TriangleCount * 3 + LineCount * 2; }
+			uint32_t GetTotalIndexCount() { return QuadCount * 6 + TriangleCount * 3 + LineCount * 2; }
 		};
 
 		static Statistics GetStats();

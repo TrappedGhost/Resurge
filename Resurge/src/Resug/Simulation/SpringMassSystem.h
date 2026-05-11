@@ -1,38 +1,12 @@
+// SpringMassSystem.h
 #pragma once
+#include <vector>
+#include <glm/glm.hpp>
+
+#include "MassPoint.h"
+#include "Spring.h"
 
 namespace Resug {
-
-    struct MassPoint
-    {
-        glm::vec3 Position;
-        glm::vec3 PrevPosition;
-        glm::vec3 Velocity;
-        glm::vec3 Force;
-        float Mass;
-        bool Fixed;
-
-        MassPoint(const glm::vec3& pos, float mass = 1.0f, bool fixed = false)
-            : Position(pos), PrevPosition(pos), Velocity(0.0f), Force(0.0f)
-            , Mass(mass), Fixed(fixed)
-        {
-        }
-    };
-
-    struct Spring
-    {
-        int PointA;
-        int PointB;
-        float RestLength;
-        float Stiffness;
-        float Damping;
-
-        Spring(int a, int b, float restLength, float stiffness = 10000.0f, float damping = 1.0f)
-            : PointA(a), PointB(b), RestLength(restLength)
-            , Stiffness(stiffness), Damping(damping)
-        {
-        }
-    };
-
 
 
     class SpringMassSystem
@@ -40,53 +14,105 @@ namespace Resug {
     public:
         SpringMassSystem() = default;
 
-        void AddPoint(const glm::vec3& position, float mass = 1.0f, bool fixed = false)
+        void AddPoint(const glm::dvec3& position, double mass = 1.0f, bool fixed = false)
         {
             m_Points.emplace_back(position, mass, fixed);
         }
-        void AddPoint(const glm::vec4& position, float mass = 1.0f, bool fixed = false)
-        {
-            m_Points.emplace_back(glm::vec3(position), mass, fixed);
-        }
 
-        void AddSpring(int a, int b, float stiffness = 100.0f, float damping = 1.0f)
+        void AddSpring(int a, int b, double stiffness = 500.0f, double damping = 2.0f)
         {
-            float restLength = glm::distance(m_Points[a].Position, m_Points[b].Position);
+            double restLength = glm::distance(m_Points[a].Position, m_Points[b].Position);
             m_Springs.emplace_back(a, b, restLength, stiffness, damping);
         }
 
-        void SetPointPosition(int i, glm::vec3 position)
+        // 创建矩形布料网格
+        void CreateClothGrid(int width, int height, double spacing,
+            double stiffness = 500.0f, double damping = 2.0f)
         {
-            m_Points[i].Position = position;
+            // 创建质点
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    glm::dvec3 pos((x - width / 2.0f) * spacing,
+                        y * spacing + 5.0f,  // 从高度5开始
+                        0.0f);
+                    // 固定顶部两个角
+                    bool fixed = (y == height - 1 && (x == 0 || x == width - 1));
+                    AddPoint(pos, 0.1f, fixed);
+                }
+            }
+
+            // 创建弹簧（结构弹簧 + 剪切弹簧 + 弯曲弹簧）
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int idx = y * width + x;
+
+                    // 结构弹簧（上下左右）
+                    if (x + 1 < width)
+                        AddSpring(idx, y * width + (x + 1), stiffness, damping);
+                    if (y + 1 < height)
+                        AddSpring(idx, (y + 1) * width + x, stiffness, damping);
+
+                    // 剪切弹簧（对角线）
+                    if (x + 1 < width && y + 1 < height)
+                        AddSpring(idx, (y + 1) * width + (x + 1), stiffness * 0.7f, damping);
+                    if (x - 1 >= 0 && y + 1 < height)
+                        AddSpring(idx, (y + 1) * width + (x - 1), stiffness * 0.7f, damping);
+
+                    // 弯曲弹簧（隔一个点）
+                    if (x + 2 < width)
+                        AddSpring(idx, y * width + (x + 2), stiffness * 0.5f, damping);
+                    if (y + 2 < height)
+                        AddSpring(idx, (y + 2) * width + x, stiffness * 0.5f, damping);
+                }
+            }
+
+            isIntialize = true;
         }
-        void SetPointPosition(int i, glm::vec4 position)
+
+        void OnUpdate(double dt)
         {
-            m_Points[i].Position = position;
+            if (!isIntialize) return;
+
+            ComputeForces();
+            IntegrateSemiImplicitEuler(dt);
+            HandleGroundCollision();
         }
-        glm::vec4 GetPointPosition(int i){return glm::vec4(m_Points[i].Position, 1.0f);}
-        glm::vec4 GetPointVelocity(int i){return glm::vec4(m_Points[i].Velocity, 1.0f);}
-        glm::vec4 GetPointForcef4(int i){ return glm::vec4(m_Points[i].Force, 1.0f);        }
-        glm::vec3 GetPointForcef3(int i){ return glm::vec3(m_Points[i].Force);        }
 
-        bool GetIntialize() { return isIntialize; }
-        void SetIntialize(bool bo) { isIntialize = bo; }
+        // 获取点数量
+        size_t GetPointCount() const { return m_Points.size(); }
 
-        void OnAttach();
+        // 获取点位置（用于渲染）
+        const glm::dvec3& GetPointPosition(int i) const { return m_Points[i].Position; }
 
-        void OnUpdate(Timestep& ts);
+        // 获取弹簧数量
+        size_t GetSpringCount() const { return m_Springs.size(); }
 
-        operator bool() { return isIntialize; }
+        // 获取弹簧端点
+        void GetSpringEndpoints(int i, int& a, int& b) const
+        {
+            a = m_Springs[i].PointA;
+            b = m_Springs[i].PointB;
+        }
+
+        bool GetIntialize() const { return isIntialize; }
+
     private:
         void ComputeForces();
-        
-        void IntegrateVerlet(float dt);
+        void IntegrateSemiImplicitEuler(double dt);
+        void HandleGroundCollision();
+
     private:
         bool isIntialize = false;
-
         std::vector<MassPoint> m_Points;
         std::vector<Spring> m_Springs;
-        glm::vec3 m_Gravity = glm::vec3(0.0f, -9.8f, 0.0f);
-        float m_GlobalDamping = 0.1f;
+
+        glm::dvec3 m_Gravity = glm::dvec3(0.0f, -9.8f, 0.0f);
+       
+        double m_GroundY = -3.0f;              // 地面高度
+        double m_Restitution = 0.7f;           // 弹跳系数（0.7 = 弹起70%高度）
     };
 }
-

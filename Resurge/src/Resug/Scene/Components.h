@@ -34,64 +34,79 @@ namespace Resug
 
 	struct  TransformComponent
 	{
-		glm::mat4 Transform{ 1.0f };
+		glm::dmat4 Transform{ 1.0f };
 
-		glm::vec3 Position{ 0.0f,0.0f,0.0f };
-		glm::vec3 Rotation{ 0.0f,0.0f,0.0f };
-		glm::vec3 Scale{ 1.0f,1.0f,1.0f };
+		glm::dvec3 Position{ 0.0f,0.0f,0.0f };
+		glm::dvec3 Rotation{ 0.0f,0.0f,0.0f };
+		glm::dvec3 Scale{ 1.0f,1.0f,1.0f };
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::mat4& transform)
+		TransformComponent(const glm::dmat4& transform)
 			:Transform(transform){ }
-		glm::mat4 GetTransform()
+		glm::dmat4 GetTransform()
 		{
 			RecalculateTransform();
 			return Transform;
 		}
 		void RecalculateTransform()
 		{
-			glm::mat4 RotationMat = glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.x), { 1,0,0 })
-				* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.y), { 0,1,0 })
-				* glm::rotate(glm::mat4(1.0f), glm::radians(Rotation.z), { 0,0,1 });
+			glm::dmat4 RotationMat = glm::rotate(glm::dmat4(1.0f), glm::radians(Rotation.x), { 1,0,0 })
+				* glm::rotate(glm::dmat4(1.0f), glm::radians(Rotation.y), { 0,1,0 })
+				* glm::rotate(glm::dmat4(1.0f), glm::radians(Rotation.z), { 0,0,1 });
 
-			Transform = glm::translate(glm::mat4(1.0f), Position)
+			Transform = glm::translate(glm::dmat4(1.0f), Position)
 				* RotationMat
-				* glm::scale(glm::mat4(1.0f), Scale);
+				* glm::scale(glm::dmat4(1.0f), Scale);
 		}
 
-		operator glm::mat4& () { return Transform; }
-		operator const glm::mat4& () const { return Transform; }
+		operator glm::dmat4& () { return Transform; }
+		operator const glm::dmat4& () const { return Transform; }
 
 	};
 
 	struct SpriteRendererComponent
 	{
-		//SpringMassSystem SMSystem;
-		//FiniteElementMesh2D FEMSystem;
-		//glm::vec4 vertexPosition[4];//TODO : 移动到物理组件。
 
+		enum class SpriteTpye
+		{
+			Quad = 0,
+			Circle = 1,
+			Mesh = 2
+		};
 
 		glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f };
+
+		// Circle
+		float radius = 0.5f;
+
+		SpriteTpye Type  = SpriteTpye::Quad;
+
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;
-		SpriteRendererComponent(glm::vec4 color) 
-			:Color(color)
+		SpriteRendererComponent(glm::vec4 color, SpriteTpye type) 
+			:Color(color), Type(type)
 		{
 			
 		}
 
 	};
 
-	struct MeshRendererComponent
+
+	struct Mesh2DComponent
 	{
 
 		Mesh2D Mesh;
 
-		MeshRendererComponent() = default;
-		MeshRendererComponent(const MeshRendererComponent&) = default;
-		MeshRendererComponent(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type)
-			: Mesh(color, width, height, type)
+		Mesh2DComponent() = default;
+		Mesh2DComponent(const Mesh2DComponent&) = default;
+		Mesh2DComponent( uint32_t width, uint32_t height, Mesh2DType type)
+			: Mesh( width, height, type)
+		{
+		
+		}
+		Mesh2DComponent( uint32_t width, uint32_t height, Mesh2DType type, MeshRenderType renderType)
+			: Mesh( width, height, type, renderType)
 		{
 		
 		}
@@ -127,21 +142,21 @@ namespace Resug
 	{
 		BoxCollider2D BoxCollider;
 
-		glm::vec3  RelativePosition[4];
+		glm::dvec3  RelativePosition[4];
 
 
-		void SetVertexPosition(glm::vec3 Position)
+		void SetVertexPosition(glm::dvec3 Position)
 		{
-			RelativePosition[0] = glm::vec3(-0.5f, -0.5f, 0.0f);
-			RelativePosition[1] = glm::vec3( 0.5f, -0.5f, 0.0f);
-			RelativePosition[2] = glm::vec3( 0.5f,  0.5f, 0.0f);
-			RelativePosition[3] = glm::vec3(-0.5f,  0.5f, 0.0f);
+			RelativePosition[0] = glm::dvec3(-0.5f, -0.5f, 0.0f);
+			RelativePosition[1] = glm::dvec3( 0.5f, -0.5f, 0.0f);
+			RelativePosition[2] = glm::dvec3( 0.5f,  0.5f, 0.0f);
+			RelativePosition[3] = glm::dvec3(-0.5f,  0.5f, 0.0f);
 			for (int i = 0; i < 4; i++)
 			{
 				BoxCollider.m_VertexPosition[i] = Position + RelativePosition[i];
 			}
 		}
-		glm::vec3 OnUpdate(float ts, glm::vec3 velocity)
+		glm::dvec3 OnUpdate(float ts, glm::dvec3 velocity)
 		{
 			return BoxCollider.OnUpdate(ts, velocity);
 		}
@@ -155,33 +170,33 @@ namespace Resug
 
 	};
 
-	struct MeshCollider2DComponent
-	{
-		MeshCollider2D MeshCollider;
+	//struct MeshCollider2DComponent
+	//{
+	//	MeshCollider2D MeshCollider;
 
-		glm::vec3  RelativePosition[4];
+	//	glm::dvec3  RelativePosition[4];
 
 
-		void SetVertexPosition(glm::vec3 Position)
-		{
-			RelativePosition[0] = glm::vec3(-0.5f, -0.5f, 0.0f);
-			RelativePosition[1] = glm::vec3(0.5f, -0.5f, 0.0f);
-			RelativePosition[2] = glm::vec3(0.5f, 0.5f, 0.0f);
-			RelativePosition[3] = glm::vec3(-0.5f, 0.5f, 0.0f);
-			for (int i = 0; i < 4; i++)
-			{
-				MeshCollider.m_VertexPosition[i] = Position + RelativePosition[i];
-			}
-		}
-		glm::vec3 OnUpdate(float ts, glm::vec3* velocity)
-		{
-			return MeshCollider.OnUpdate(ts, velocity);
-		}
+	//	void SetVertexPosition(glm::dvec3 Position)
+	//	{
+	//		RelativePosition[0] = glm::dvec3(-0.5f, -0.5f, 0.0f);
+	//		RelativePosition[1] = glm::dvec3(0.5f, -0.5f, 0.0f);
+	//		RelativePosition[2] = glm::dvec3(0.5f, 0.5f, 0.0f);
+	//		RelativePosition[3] = glm::dvec3(-0.5f, 0.5f, 0.0f);
+	//		for (int i = 0; i < 4; i++)
+	//		{
+	//			MeshCollider.m_VertexPosition[i] = Position + RelativePosition[i];
+	//		}
+	//	}
+	//	glm::dvec3 OnUpdate(float ts, glm::dvec3* velocity)
+	//	{
+	//		return MeshCollider.OnUpdate(ts, velocity);
+	//	}
 
-		MeshCollider2DComponent() = default;
-		MeshCollider2DComponent(const MeshCollider2DComponent&) = default;
+	//	MeshCollider2DComponent() = default;
+	//	MeshCollider2DComponent(const MeshCollider2DComponent&) = default;
 
-	};
+	//};
 
 	struct SMS2DComponent
 	{
@@ -191,6 +206,8 @@ namespace Resug
 		SMS2DComponent() = default;
 		SMS2DComponent(const SMS2DComponent&) = default;
 	};
+
+
 
 	struct FEM2DComponent
 	{

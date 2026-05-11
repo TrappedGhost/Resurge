@@ -9,18 +9,18 @@ namespace Resug
 	public:
 		MeshCollider2D();
 
-		glm::vec3 OnUpdate(float ts, glm::vec3* vertexVelocity);
+		glm::dvec3 OnUpdate(double ts, glm::dvec3* vertexVelocity);
 
 		void SetVertexSize(uint32_t size) { m_VertexSize = size; }
 
-		glm::vec3 GetVertexPosition(uint32_t x) { return m_VertexPosition[x]; }
+		glm::dvec3 GetVertexPosition(uint32_t x) { return m_VertexPosition[x]; }
 
 
 
 
-		glm::vec3 m_VertexPosition[10000];
-		glm::vec3 m_VertexVelocity[10000];
-		glm::vec3 m_VertexDisplacement[10000];
+		glm::dvec3 m_VertexPosition[10000];
+		glm::dvec3 m_VertexVelocity[10000];
+		glm::dvec3 m_VertexDisplacement[10000];
 		uint32_t m_VertexSize = 0;
 
 		bool m_OnGround = false;

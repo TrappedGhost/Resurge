@@ -17,10 +17,10 @@ namespace Resug
 
 	void OrthographicCamera::ReCalculateViewMatrix()
 	{
-		
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) * 
-			glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), glm::vec3(0, 0, 1));
-		
+
+		glm::dmat4 transform = glm::translate(glm::dmat4(1.0), m_Position) *
+			glm::rotate(glm::dmat4(1.0), glm::radians<double>(m_Rotation), glm::dvec3(0, 0, 1));
+
 		m_ViewMatrix = glm::inverse(transform);
 		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}

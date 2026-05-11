@@ -4,22 +4,22 @@
 #include <iomanip>
 #include<glm/glm.hpp>
 
-// vec2
-inline std::ostream& operator<<(std::ostream& os, const glm::vec2& v)
+// dvec2
+inline std::ostream& operator<<(std::ostream& os, const glm::dvec2& v)
 {
     os << "(" << v.x << ", " << v.y << ")";
     return os;
 }
 
-// vec3
-inline std::ostream& operator<<(std::ostream& os, const glm::vec3& v)
+// dvec3
+inline std::ostream& operator<<(std::ostream& os, const glm::dvec3& v)
 {
     os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
     return os;
 }
 
-// vec4
-inline std::ostream& operator<<(std::ostream& os, const glm::vec4& v)
+// dvec4
+inline std::ostream& operator<<(std::ostream& os, const glm::dvec4& v)
 {
     os << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")";
     return os;

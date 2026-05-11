@@ -7,57 +7,68 @@ namespace Resug
 	{
 		Quad = 0,
 		TriangleLeft = 1,
-		TriangleRight = 2
+		TriangleRight = 2,
+		Circle = 3,
+		Line = 4
 	};
+	enum class MeshRenderType
+	{
+		Quad = 0,
+		Triangle = 1,
+		Line = 2
+	};
+
 	class Mesh2D
 	{
 
 	public:
 		Mesh2D() = default;
-		Mesh2D(glm::vec4 color, uint32_t width, uint32_t height, Mesh2DType type);
 
-		void CalculateVertexPosition();
-		void CalculateVertexPositionByRelative(glm::vec3 position);
-		void  CalculateRelative(glm::vec3 position);
-		void  CalculateRelative(glm::vec4 position);
+		Mesh2D(uint32_t width, uint32_t height, Mesh2DType type);
 
-		glm::vec4 CalculateAveragePosition();
+		Mesh2D(uint32_t width, uint32_t height, Mesh2DType type, MeshRenderType renderType);
 
+		Mesh2D(uint32_t length, uint32_t indexNumber,glm::dvec3 dir, Mesh2DType type, MeshRenderType renderType);
 
-		glm::vec4* GetVertexPosition() { return m_VertexPosition; }
-		const glm::vec4* GetVertexPosition() const { return m_VertexPosition; }
+		void CalculateQuadVertexPosition();
+		void CalculateLineVertexPosition();
 
-		void SetVertexPosition(uint32_t x, uint32_t y, glm::vec4 position) { m_VertexPosition[y * m_Width + x] = position; }
-		glm::vec4 GetVertexPosition(uint32_t x, uint32_t y) {return m_VertexPosition[y * m_Width + x]; }
-		glm::vec4 GetVertexPosition(uint32_t x) {return m_VertexPosition[x]; }
-		glm::vec4 GetRelativePosition(uint32_t x, uint32_t y) {return m_RelativePosition[y * m_Width + x]; }
+		glm::dvec4* GetVertexPosition() { return m_VertexPosition; }
+		const glm::dvec4* GetVertexPosition() const { return m_VertexPosition; }
+
+		void SetVertexPosition(uint32_t x, uint32_t y, glm::dvec4 position) { m_VertexPosition[y * m_Width + x] = position; }
+		void SetVertexPosition(uint32_t i, glm::dvec4 position) { m_VertexPosition[i] = position; }
+
+		glm::dvec4 GetVertexPosition(uint32_t x, uint32_t y) {return m_VertexPosition[y * m_Width + x]; }
+		glm::dvec4 GetVertexPosition(uint32_t x) {return m_VertexPosition[x]; }
 
 		uint32_t GetWidth() const { return m_Width; }
 		uint32_t GetHeight() const { return m_Height; }
 		Mesh2DType GetType() const { return m_Type; }
 
-		glm::vec2 GetLength() const { return m_Length; }
-		glm::vec4 GetColor() const { return m_Color; }
-
 		void SetWidth(uint32_t width) { m_Width = width; }
 		void SetHeight(uint32_t height) { m_Height = height; }
 		void SetType(Mesh2DType type) { m_Type = type; }
 
-		void SetLength(const glm::vec2& length) { m_Length = length; }
-		void SetLength(float x, float y) { m_Length = glm::vec2(x, y); }
+		glm::dvec3 GetScale() const { return m_Scale; }
+		glm::dvec3 GetRotation() const { return m_Rotation; }
 
-		void SetColor(const glm::vec4& color) { m_Color = color; }
-		void SetColor(float r, float g, float b, float a) { m_Color = glm::vec4(r, g, b, a); }
+		void SetScale(glm::dvec3 scale) { m_Scale = scale; }
+		void SetRotation(glm::dvec3 rotation) { m_Rotation = rotation; }
+
 	public:
-		uint32_t m_Width, m_Height;
-		Mesh2DType m_Type;
+		uint32_t m_Width = 3;
+		uint32_t m_Height = 3;
+		Mesh2DType m_Type = Mesh2DType::Quad;
+		MeshRenderType m_RenderType = MeshRenderType::Quad;
 
-		glm::vec2 m_Length = glm::vec2(1.0f);
+		double m_Length = 1.0f;
 
-		glm::vec4 m_Color;
+		glm::dvec3 m_Scale = glm::dvec3(1.0f);
+		glm::dvec3 m_Rotation = glm::dvec3(0.0f);
 
-		glm::vec4 m_VertexPosition[10000];
-		glm::vec4 m_RelativePosition[10000];
+		uint32_t m_TransformVertex = 0;
+		glm::dvec4 m_VertexPosition[10000];
 
 
 	};

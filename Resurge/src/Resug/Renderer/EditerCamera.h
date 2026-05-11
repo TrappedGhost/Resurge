@@ -16,7 +16,7 @@ namespace Resug
 		};
 		
 		EditerCamera();
-		EditerCamera(glm::mat4 projection);
+		EditerCamera(glm::dmat4 projection);
 		virtual ~EditerCamera() = default;
 
 		void OnUpdate();
@@ -25,17 +25,17 @@ namespace Resug
 		CameraType GetCameraType() { return m_CameraType; }
 		void SetCameraType(CameraType type) { m_CameraType = type; }
 
-		float GetCameraSize() { return m_CameraSize; }
-		float GetCameraNear() { return m_CameraNear; }
-		float GetCameraFar() { return m_CameraFar; }
-		glm::vec3 GetCameraPosition() { return m_CameraPosition; }
-		glm::mat4 GetCameraTransform() { return m_CameraTransform; }
+		double GetCameraSize() { return m_CameraSize; }
+		double GetCameraNear() { return m_CameraNear; }
+		double GetCameraFar() { return m_CameraFar; }
+		glm::dvec3 GetCameraPosition() { return m_CameraPosition; }
+		glm::dmat4 GetCameraTransform() { return m_CameraTransform; }
 
-		void SetCameraSize(float size) { m_CameraSize = size; RecalculateProjection(); }
-		void SetCameraFar(float size) { m_CameraFar = size; RecalculateProjection(); }
-		void SetCameraNear(float size) { m_CameraNear = size; RecalculateProjection(); }
+		void SetCameraSize(double size) { m_CameraSize = size; RecalculateProjection(); }
+		void SetCameraFar(double size) { m_CameraFar = size; RecalculateProjection(); }
+		void SetCameraNear(double size) { m_CameraNear = size; RecalculateProjection(); }
 
-		void SetOrth(float size, float nearC, float farC);
+		void SetOrth(double size, double nearC, double farC);
 
 		void SetViewportSize(uint32_t width, uint32_t height);
 	private:
@@ -43,18 +43,18 @@ namespace Resug
 		void RecalculateTransform();
 	private:
 
-		glm::mat4 m_CameraTransform = glm::mat4(1.0f);
+		glm::dmat4 m_CameraTransform = glm::dmat4(1.0f);
 
-		glm::vec3 m_CameraPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec2 m_PreMousePosition = glm::vec2( 0.0f, 0.0f);
+		glm::dvec3 m_CameraPosition = glm::dvec3(0.0f, 0.0f, 0.1f);
+		glm::dvec2 m_PreMousePosition = glm::dvec2( 0.0f, 0.0f);
 
 
 		CameraType m_CameraType = CameraType::Orthographic;
 
-		float m_CameraSize = 10.0f;
-		float m_CameraFar = 1.0f, m_CameraNear = -1.0f;
+		double m_CameraSize = 10.0f;
+		double m_CameraFar = 1.0f, m_CameraNear = -1.0f;
 
-		float m_AspectRatio = 0.0f;
+		double m_AspectRatio = 0.0f;
 
 
 

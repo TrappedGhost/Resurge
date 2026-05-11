@@ -18,7 +18,7 @@ void Resug::OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t widt
 	glViewport(x, y, width, height);
 }
 
-void Resug::OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
+void Resug::OpenGLRendererAPI::SetClearColor(const glm::dvec4& color)
 {
 	RG_PROFILE_FUNCTION();
 
@@ -37,11 +37,23 @@ void Resug::OpenGLRendererAPI::Flush()
 	glFlush();
 }
 
-void Resug::OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray, const uint32_t count)
+void Resug::OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray,RenderType type, const uint32_t count)
 {
 	RG_PROFILE_FUNCTION();
 
 	uint32_t Count = count ? count : vertexArray->GetIndexBuffer()->GetCount();
-	glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, nullptr);
+	switch (type)
+	{
+	case Resug::RenderType::Triangle:
+		glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, nullptr);
+		break;
+	case Resug::RenderType::Line:
+		glDrawElements(GL_LINES, Count, GL_UNSIGNED_INT, nullptr);
+		break;
+	default:
+		break;
+	}
+
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 }

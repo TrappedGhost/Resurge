@@ -9,14 +9,14 @@ namespace Resug
 	public:
 		BoxCollider2D();
 
-		glm::vec3 OnUpdate(float ts, glm::vec3 velocity);
+		glm::dvec3 OnUpdate(double ts, glm::dvec3 velocity);
 
 
 
 
-		glm::vec3 m_VertexPosition[4];
-		glm::vec3 m_VertexVelocity[4];
-		glm::vec3 m_VertexDisplacement[4];
+		glm::dvec3 m_VertexPosition[4];
+		glm::dvec3 m_VertexVelocity[4];
+		glm::dvec3 m_VertexDisplacement[4];
 		uint32_t m_VertexSize = 4;
 
 

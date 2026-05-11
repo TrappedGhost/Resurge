@@ -11,7 +11,7 @@ namespace Resug
 		m_Type = ColliderType::Mesh2D;
 
 	}
-	glm::vec3 MeshCollider2D::OnUpdate(float ts, glm::vec3* vertexVelocity)
+	glm::dvec3 MeshCollider2D::OnUpdate(double ts, glm::dvec3* vertexVelocity)
 	{
 
 		for (int i = 0; i < m_VertexSize; i++)
@@ -22,6 +22,7 @@ namespace Resug
 		}
 		//std::cout << "\n";
 		int n = Collider::Colliders.size();
+		glm::dvec3 resultDisplacement = glm::dvec3(0.0f);
 		if (n > 1)
 		{
 			for (int i = 0; i < n; i++)
@@ -39,9 +40,21 @@ namespace Resug
 							collider->m_VertexPosition,
 							collider->m_VertexSize))
 						{
-							
-							m_VertexDisplacement[j] = glm::vec3(0.0f);
-							m_VertexVelocity[j] = glm::vec3(0.0f);
+							resultDisplacement = GetResultDisplacement(m_VertexPosition[j] + m_VertexDisplacement[j],
+								m_VertexDisplacement[j],
+								collider->m_VertexPosition,
+								collider->m_VertexSize);
+							//if(resultDisplacement.x<0.0f)
+							m_VertexDisplacement[j].x = (-0.0005f);
+							//m_VertexDisplacement[j].x = -resultDisplacement.x;
+							//if (resultDisplacement.x > 0.0f)
+								//m_VertexDisplacement[j].x = (0.0005f);
+							//m_VertexVelocity[j] = glm::dvec3(0.0f);
+							m_VertexVelocity[j].y = -m_VertexVelocity[j].y;
+							m_VertexDisplacement[j].y = -m_VertexVelocity[i].y * ts;
+							m_VertexDisplacement[j].y = -m_VertexVelocity[i].y * ts;
+							//std::cout << m_VertexDisplacement[j] << "\n";
+							//m_VertexVelocity[j] = -m_VertexVelocity[j];
 						}
 					}
 				}
@@ -51,8 +64,11 @@ namespace Resug
 		{
 			if ((m_VertexPosition[i] + m_VertexDisplacement[i]).y < Ground)
 			{
-				m_VertexDisplacement[i] = glm::vec3(0.0f);
-				m_VertexVelocity[i] = glm::vec3(0.0f);
+				m_VertexDisplacement[i] = glm::dvec3(0.0f);
+				//m_VertexVelocity[i] = glm::dvec3(0.0f);
+				m_VertexVelocity[i].y = -m_VertexVelocity[i].y ;
+				m_VertexDisplacement[i] += m_VertexVelocity[i] * ts;
+
 			}
 		}
 		for (int i = 0; i < m_VertexSize; i++)
@@ -61,6 +77,6 @@ namespace Resug
 		}
 
 
-		return glm::vec3();
+		return glm::dvec3();
 	}
 }

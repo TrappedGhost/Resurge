@@ -38,6 +38,6 @@ namespace Resug
 		std::dynamic_pointer_cast<Resug::OpenGLShader>(shader)->UploadUniformMat4("u_ViewProjection", m_sceneData->ViewProjectionMatrix);
 		std::dynamic_pointer_cast<Resug::OpenGLShader>(shader)->UploadUniformMat4("u_Transform", transform);
 		vertexArray->Bind();
-		RendererCommand::DrawIndexed(vertexArray);
+		RendererCommand::DrawIndexed(vertexArray, RenderType::Triangle);
 	}
 }

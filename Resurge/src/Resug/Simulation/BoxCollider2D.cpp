@@ -11,11 +11,11 @@ namespace Resug
 		Collider::Colliders.push_back(this);
 	}
 
-	glm::vec3 BoxCollider2D::OnUpdate(float ts, glm::vec3 velocity)
+	glm::dvec3 BoxCollider2D::OnUpdate(double ts, glm::dvec3 velocity)
 	{
 		bool isCollide = false;
 
-		glm::vec3 displacement = velocity * ts;
+		glm::dvec3 displacement = velocity * ts;
 		for (int i = 0; i < 4; i++)
 		{
 			m_VertexVelocity[i] = velocity;
@@ -58,9 +58,9 @@ namespace Resug
 		{
 			for (int i = 0; i < 4; i++)
 			{
-				displacement = glm::vec3(0.0f);
-				m_VertexDisplacement[i] = glm::vec3(0.0f);
-				m_VertexVelocity[i] = glm::vec3(0.0f);
+				displacement = glm::dvec3(0.0f);
+				m_VertexDisplacement[i] = glm::dvec3(0.0f);
+				m_VertexVelocity[i] = glm::dvec3(0.0f);
 			}
 		}
 		return displacement;

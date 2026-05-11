@@ -23,6 +23,7 @@
 EditorLayer::EditorLayer()
 	:Layer("EditorLayer"), m_CameraController(1280.0f/720.0f)
 {
+    m_GizomType = -1;
 }
 
 void EditorLayer::OnAttach()
@@ -39,19 +40,37 @@ void EditorLayer::OnAttach()
 
     m_ActiveScene = Resug::CreateRef<Resug::Scene>();
 
-
-
-
-    Resug::Entity squareEntity1 = m_ActiveScene->CreateEntity("namename1");
-
-    squareEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
-
-
-
     auto& camearEntity = m_ActiveScene->CreateEntity("Camera");
 
     camearEntity.AddComponent<Resug::CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
     
+
+	auto& quadEntity1 = m_ActiveScene->CreateEntity("Quad1");
+    quadEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Quad);
+
+	//auto& quadEntity2 = m_ActiveScene->CreateEntity("Quad2");
+ //   quadEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Quad);
+ //   quadEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, 2.0f, 0.0f);
+ //   quadEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+
+	//auto& circleEntity1 = m_ActiveScene->CreateEntity("Circle1");
+ //   circleEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.5f, 0.0f, 0.2f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Circle);
+ //   circleEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, 2.0f, 0.0f);
+ //   circleEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+
+	//auto& meshEntity1 = m_ActiveScene->CreateEntity("Mesh1");
+ //   meshEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
+ //   meshEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, -2.0f, 0.0f);
+ //   meshEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+
+	//meshEntity1.AddComponent<Resug::Mesh2DComponent>(3, 3, Resug::Mesh2DType::Quad, Resug::MeshRenderType::Quad);
+
+	//auto& meshEntity2 = m_ActiveScene->CreateEntity("Mesh2");
+ //   meshEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.3f, 0.7f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
+ //   meshEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, -2.0f, 0.0f);
+ //   meshEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	//meshEntity2.AddComponent<Resug::Mesh2DComponent>(1, 6, Resug::Mesh2DType::Line, Resug::MeshRenderType::Line);
+
 
     //TODO : 下面这个相机不能正常工作  疑似glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)  没有之前处理。
     //m_SecondCameraEntity = m_ActiveScene->CreateEntity("SecondCamera");
@@ -83,26 +102,25 @@ void EditorLayer::OnAttach()
 
     camearEntity.AddComponent<Resug::NativeScriptComponent>().Bind<CameraCotroller>();
 
-    m_ActiveScene = Resug::CreateRef<Resug::Scene>();
-    m_SceneHierarchyPanel.SetContext(m_ActiveScene);
-
-
-    Resug::Serializer serializer = Resug::Serializer(m_ActiveScene);
-    serializer.Derialize("Assert/Scene/rigicandcoll.resug");
-
-    m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-
     //Panel
     m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 
 
-    Resug::Entity squareEntity = m_ActiveScene->CreateEntity("Mesh");
+    //Resug::Entity squareEntity = m_ActiveScene->CreateEntity("Mesh1");
 
-    squareEntity.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f }, 
-        10, 10, Resug::Mesh2DType::Quad);
-    squareEntity.AddComponent<Resug::MeshCollider2DComponent>();
-    squareEntity.AddComponent<Resug::FEM2DComponent>();
+    //squareEntity.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f }, 
+    //    3, 3, Resug::Mesh2DType::Quad);
+    //squareEntity.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.5f, 0.0f, 0.0f);
+    //squareEntity.GetComponent<Resug::TransformComponent>().RecalculateTransform();
 
+    //squareEntity.AddComponent<Resug::SMS2DComponent>();
+
+    //Resug::Entity squareEntity2 = m_ActiveScene->CreateEntity("Mesh2");
+    //squareEntity2.AddComponent<Resug::MeshRendererComponent>(glm::vec4{ 1.0f,0.5f,0.3f,1.0f },
+    //   3, 3, Resug::Mesh2DType::Quad);
+    //squareEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-0.7f, 1.0f, 0.0f);
+    //squareEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+    //squareEntity2.AddComponent<Resug::SMS2DComponent>();
 
 
 
@@ -267,6 +285,7 @@ void EditorLayer::OnImGuiRender()
     auto stats = Resug::Renderer2D::GetStats();
     ImGui::Text("DrawCalls : %d", stats.DrawCalls);
     ImGui::Text("QuadCount : %d", stats.QuadCount);
+    ImGui::Text("TriangleCount : %d", stats.TriangleCount);
     ImGui::Text("QuadVertexCount : %d", stats.GetTotalVertexCount());
     ImGui::Text("QuadIndexCount : %d", stats.GetTotalIndexCount());
 
@@ -297,9 +316,11 @@ void EditorLayer::OnImGuiRender()
     // Gizmos
 
     Resug::Entity selectedEntity = m_SceneHierarchyPanel.GetSeletedEntity();
+    //if(selectedEntity) std::cout << m_GizomType << " ";
+    
     if (selectedEntity && m_GizomType != -1)
     {
-      
+        //std::cout << m_GizomType << " \n";
         ImGuizmo::SetOrthographic(false);  
         ImGuizmo::SetDrawlist();
 
@@ -309,10 +330,11 @@ void EditorLayer::OnImGuiRender()
         
         // Camera
         auto& cameraEntity = m_ActiveScene->GetPrimaryCameraEntity();
-        auto& camera = cameraEntity.GetComponent<Resug::CameraComponent>().Camera;
-        
+        //auto& camera = cameraEntity.GetComponent<Resug::CameraComponent>().Camera;
+        auto& camera = m_EditerCamera;
+
         const glm::mat4& cameraProjection = camera.GetProjection();
-        glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<Resug::TransformComponent>().GetTransform());
+        glm::mat4 cameraView = glm::inverse(camera.GetCameraTransform());
         
         // Entity transform
         auto& tc = selectedEntity.GetComponent<Resug::TransformComponent>();
@@ -366,7 +388,6 @@ bool EditorLayer::OnKeyPressed(Resug::KeyPressedEvent& event)
     {
         return false;
     }
-    std::cout << event.GetKeyCode() << " ";
     switch (event.GetKeyCode())
     {
     case RG_KEY_Q:

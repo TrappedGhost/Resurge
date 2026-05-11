@@ -10,7 +10,7 @@ namespace Resug
 		:m_Camera(-aspectRatio * m_ZoomLevel, aspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_CameraRotationB(cameraRotationB)
 	{
 		m_AspectRatio = aspectRatio;
-		m_CameraPosition = glm::vec3(0.0f);
+		m_CameraPosition = glm::dvec3(0.0f);
 	}
 	void OrthographicCameraController::OnUpdate(Timestep ts)
 	{

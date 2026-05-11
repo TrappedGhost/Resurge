@@ -5,19 +5,19 @@ namespace Resug
 {
 	void RigidBody::CalculateForce()
 	{
-		Force = glm::vec3(0.0f, -9.8f * Mass, 0.0f);
+		Force = glm::dvec3(0.0, -9.8 * Mass, 0.0);
 	}
 	void RigidBody::CalculateAcceleration()
 	{
 		CalculateForce();
 		Acceleration = Force / Mass;
 	}
-	void RigidBody::CalculateVelocity(float ts)
+	void RigidBody::CalculateVelocity(double ts)
 	{
 		CalculateAcceleration();
 		Velocity += Acceleration * ts;
 	}
-	glm::vec3 RigidBody::GetDisplacement(float ts)
+	glm::dvec3 RigidBody::GetDisplacement(double ts)
 	{
 		CalculateForce();
 		CalculateAcceleration();

@@ -51,6 +51,12 @@ namespace Resug
 	}
 
 
+	enum class RenderType
+	{
+		Triangle = 0,
+		Line = 1,
+	};
+
 }
 
 

@@ -7,7 +7,7 @@ namespace Resug
 	{
 	public:
 		Camera() = default;
-		Camera(glm::mat4 projection)
+		Camera(glm::dmat4 projection)
 			:m_Projection(projection)
 		{
 
@@ -15,9 +15,9 @@ namespace Resug
 
 		virtual ~Camera() = default;
 
-		glm::mat4 GetProjection() { return m_Projection; }
+		glm::dmat4 GetProjection() { return m_Projection; }
 	protected:
-		glm::mat4 m_Projection;
+		glm::dmat4 m_Projection;
 	};
 
 }

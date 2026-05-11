@@ -27,7 +27,7 @@ namespace Resug
 		float m_AspectRatio;
 		float m_ZoomLevel = 1.0f;
 		
-		glm::vec3 m_CameraPosition;
+		glm::dvec3 m_CameraPosition;
 		float m_CameraPositionSpeed = 1.0f;
 
 		bool m_CameraRotationB;

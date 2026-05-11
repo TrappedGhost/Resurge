@@ -150,6 +150,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Resug\Simulation\Spring.h" />
+    <ClInclude Include="src\Resug\Simulation\MassPoint.h" />
     <ClInclude Include="src\Resug\Renderer\Mesh2D.h" />
     <ClInclude Include="src\Resug\Simulation\MeshCollider2D.h" />
     <ClInclude Include="src\Resug\Simulation\BoxCollider2D.h" />
@@ -630,6 +632,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Resug\Simulation\Spring.cpp" />
+    <ClCompile Include="src\Resug\Simulation\MassPoint.cpp" />
     <ClCompile Include="src\Resug\Renderer\Mesh2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\FiniteElementMesh2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\MeshCollider2D.cpp" />
