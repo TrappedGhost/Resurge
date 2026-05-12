@@ -48,35 +48,34 @@ void EditorLayer::OnAttach()
 	auto& quadEntity1 = m_ActiveScene->CreateEntity("Quad1");
     quadEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 0.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Quad);
 
-	//auto& quadEntity2 = m_ActiveScene->CreateEntity("Quad2");
- //   quadEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Quad);
- //   quadEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, 2.0f, 0.0f);
- //   quadEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	auto& quadEntity2 = m_ActiveScene->CreateEntity("Quad2");
+    quadEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(1.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Quad);
+    quadEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, -1.0f, 0.0f);
+    quadEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+    quadEntity2.AddComponent<Resug::BoxCollider2DComponent>();
 
-	//auto& circleEntity1 = m_ActiveScene->CreateEntity("Circle1");
- //   circleEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.5f, 0.0f, 0.2f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Circle);
- //   circleEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, 2.0f, 0.0f);
- //   circleEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	auto& circleEntity1 = m_ActiveScene->CreateEntity("Circle1");
+    circleEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.5f, 0.0f, 0.2f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Circle);
+    circleEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, 2.0f, 0.0f);
+    circleEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
 
-	//auto& meshEntity1 = m_ActiveScene->CreateEntity("Mesh1");
- //   meshEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
- //   meshEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, -2.0f, 0.0f);
- //   meshEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	auto& meshEntity1 = m_ActiveScene->CreateEntity("Mesh1");
+    meshEntity1.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.0f, 0.0f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
+    meshEntity1.GetComponent<Resug::TransformComponent>().Position = glm::vec3(-2.0f, 0.0f, 0.0f);
+    meshEntity1.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	meshEntity1.AddComponent<Resug::Mesh2DComponent>(3, 3, Resug::Mesh2DType::Quad, Resug::MeshRenderType::Quad);
+	meshEntity1.AddComponent<Resug::SMS2DComponent>();
 
-	//meshEntity1.AddComponent<Resug::Mesh2DComponent>(3, 3, Resug::Mesh2DType::Quad, Resug::MeshRenderType::Quad);
-
-	//auto& meshEntity2 = m_ActiveScene->CreateEntity("Mesh2");
- //   meshEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.3f, 0.7f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
- //   meshEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, -2.0f, 0.0f);
- //   meshEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
-	//meshEntity2.AddComponent<Resug::Mesh2DComponent>(1, 6, Resug::Mesh2DType::Line, Resug::MeshRenderType::Line);
-
+	auto& meshEntity2 = m_ActiveScene->CreateEntity("Mesh2");
+    meshEntity2.AddComponent<Resug::SpriteRendererComponent>(glm::vec4(0.3f, 0.7f, 1.0f,1.0f), Resug::SpriteRendererComponent::SpriteTpye::Mesh);
+    meshEntity2.GetComponent<Resug::TransformComponent>().Position = glm::vec3(2.0f, -2.0f, 0.0f);
+    meshEntity2.GetComponent<Resug::TransformComponent>().RecalculateTransform();
+	meshEntity2.AddComponent<Resug::Mesh2DComponent>(1, 6, Resug::Mesh2DType::Line, Resug::MeshRenderType::Line);
+    meshEntity2.AddComponent<Resug::SMS2DComponent>();
 
     //TODO : 下面这个相机不能正常工作  疑似glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)  没有之前处理。
     //m_SecondCameraEntity = m_ActiveScene->CreateEntity("SecondCamera");
     //m_SecondCameraEntity.AddComponent<Resug::CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
-
-
 
     class CameraCotroller : public Resug::ScriptableEntity
     {

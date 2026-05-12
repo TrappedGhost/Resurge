@@ -9,11 +9,11 @@
 
 #include"ScriptableEntity.h"
 
+#include"Resug/Simulation/Geometry2D.h"
 #include"Resug/Simulation/SpringMassSystem.h"
 #include"Resug/Simulation/FiniteElementMesh2D.h"
 #include"Resug/Simulation/RigidBody.h"
 #include"Resug/Simulation/BoxCollider2D.h"
-#include"Resug/Simulation/MeshCollider2D.h"
 
 #include<iostream>
 
@@ -154,10 +154,12 @@ namespace Resug
 			for (int i = 0; i < 4; i++)
 			{
 				BoxCollider.m_VertexPosition[i] = Position + RelativePosition[i];
+				BoxCollider.m_Polygon->vertiesPosition[i] = BoxCollider.m_VertexPosition[i];
 			}
 		}
 		glm::dvec3 OnUpdate(float ts, glm::dvec3 velocity)
 		{
+
 			return BoxCollider.OnUpdate(ts, velocity);
 		}
 		bool CheckOnGround()

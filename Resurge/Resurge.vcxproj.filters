@@ -1478,10 +1478,10 @@
     <ClInclude Include="src\Resug\Simulation\Collider.h" />
     <ClInclude Include="src\Resug\Simulation\CollisionDetection.h" />
     <ClInclude Include="src\Resug\Simulation\BoxCollider2D.h" />
-    <ClInclude Include="src\Resug\Simulation\MeshCollider2D.h" />
     <ClInclude Include="src\Resug\Renderer\Mesh2D.h" />
     <ClInclude Include="src\Resug\Simulation\MassPoint.h" />
     <ClInclude Include="src\Resug\Simulation\Spring.h" />
+    <ClInclude Include="src\Resug\Simulation\Geometry2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
@@ -1595,10 +1595,10 @@
     <ClCompile Include="src\Resug\Simulation\Collider.cpp" />
     <ClCompile Include="src\Resug\Simulation\CollisionDetection.cpp" />
     <ClCompile Include="src\Resug\Simulation\BoxCollider2D.cpp" />
-    <ClCompile Include="src\Resug\Simulation\MeshCollider2D.cpp" />
     <ClCompile Include="src\Resug\Renderer\Mesh2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\FiniteElementMesh2D.cpp" />
     <ClCompile Include="src\Resug\Simulation\MassPoint.cpp" />
     <ClCompile Include="src\Resug\Simulation\Spring.cpp" />
+    <ClCompile Include="src\Resug\Simulation\Geometry2D.cpp" />
   </ItemGroup>
 </Project>

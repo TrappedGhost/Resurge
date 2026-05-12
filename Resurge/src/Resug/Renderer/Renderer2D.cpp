@@ -36,6 +36,14 @@ namespace Resug
 		float TexIndex;
 		float TexZoomLevel;
 	};
+	struct PointVertex
+	{
+		glm::vec4 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoord;
+		float TexIndex;
+		float TexZoomLevel;
+	};
 
 	struct Renderer2DData
 	{
@@ -107,6 +115,21 @@ namespace Resug
 
 		LineVertex* LineVertexBufferBase;
 		LineVertex* LineVertexBufferPtr;
+
+		////////////////////////////////////////////Point///////////////////////////////////////////////////////
+		uint32_t MaxPoints = 200;
+		uint32_t MaxPointVertices = 1 * MaxPoints;
+		uint32_t MaxPointIndices = 1 * MaxPoints;
+
+		Ref<VertexArray> PointVertexArray;
+		Ref<VertexBuffer> PointVertexBuffer;
+		Ref<IndexBuffer> PointIndexBuffer;
+
+		glm::vec4 PointVertexPosition;
+		uint32_t PointIndicesCount;
+
+		PointVertex* PointVertexBufferBase;
+		PointVertex* PointVertexBufferPtr;
 	};
 
 	static Renderer2DData s_Data;
@@ -159,6 +182,7 @@ namespace Resug
 
 		Renderer2D::InitTriangle();
 		Renderer2D::InitLine();
+		Renderer2D::InitPoint();
 
 
 		int32_t shaderBindTexIndex[s_Data.MaxTextureSlots];
@@ -271,7 +295,7 @@ namespace Resug
 			lineIndices[i + 0] = offset + 0;
 			lineIndices[i + 1] = offset + 1;
 
-			offset += 1;
+			offset += 2;
 		}
 
 		s_Data.LineIndexBuffer = Resug::IndexBuffer::Create(lineIndices, s_Data.MaxLineIndices);
@@ -279,7 +303,41 @@ namespace Resug
 
 		delete[] lineIndices;
 
-		s_Data.TriangleIndicesCount = 0;
+		s_Data.LineIndicesCount = 0;
+	}
+
+	void Renderer2D::InitPoint()
+	{
+		s_Data.PointVertexArray = VertexArray::Create();
+		s_Data.PointVertexBuffer = Resug::VertexBuffer::Create(s_Data.MaxPointVertices * sizeof(PointVertex));
+
+		s_Data.PointVertexBuffer->SetLayout({
+			{Resug::ShaderDataType::Float4, "a_Position"},
+			{Resug::ShaderDataType::Float4, "a_Color"},
+			{Resug::ShaderDataType::Float2, "a_TexCoord"},
+			{Resug::ShaderDataType::Float , "a_TexIndex"},
+			{Resug::ShaderDataType::Float , "a_TexZoomLevel"}
+			});
+
+		s_Data.PointVertexArray->AddVertexBuffer(s_Data.PointVertexBuffer);
+
+		s_Data.PointVertexBufferBase = new PointVertex[s_Data.MaxPointVertices];
+
+		uint32_t* pointIndices = new uint32_t[s_Data.MaxPointIndices];
+		uint32_t offset = 0;
+		for (uint32_t i = 0; i < s_Data.MaxPointIndices; i += 1)
+		{
+			pointIndices[i + 0] = offset + 0;
+
+			offset += 1;
+		}
+
+		s_Data.PointIndexBuffer = Resug::IndexBuffer::Create(pointIndices, s_Data.MaxPointIndices	);
+		s_Data.PointVertexArray->SetIndexBuffer(s_Data.PointIndexBuffer);
+
+		delete[] pointIndices;
+
+		s_Data.PointIndicesCount = 0;
 	}
 
 	void Renderer2D::Shutdown()
@@ -323,6 +381,9 @@ namespace Resug
 		//Line
 		s_Data.LineIndicesCount = 0;
 		s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+		//Point
+		s_Data.PointIndicesCount = 0;
+		s_Data.PointVertexBufferPtr = s_Data.PointVertexBufferBase;
 
 		s_Data.TextureSlotsIndex = 1;
 	}
@@ -356,6 +417,15 @@ namespace Resug
 			FlushLines();
 			s_Data.LineVertexArray->UnBind();
 		}
+
+		if (s_Data.PointIndicesCount > 0)
+		{
+			uint32_t PointDataSize = (uint8_t*)s_Data.PointVertexBufferPtr - (uint8_t*)s_Data.PointVertexBufferBase;
+			s_Data.PointVertexArray->Bind();
+			s_Data.PointVertexBuffer->SetData(s_Data.PointVertexBufferBase, PointDataSize);
+			FlushPoints();
+			s_Data.PointVertexArray->UnBind();
+		}
 	}
 
 
@@ -383,11 +453,20 @@ namespace Resug
 	{
 		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
-
 		RendererCommand::DrawIndexed(s_Data.LineVertexArray,RenderType::Line, s_Data.LineIndicesCount);
 
 		s_Data.Stats.DrawCalls++;
-	
+	}
+
+
+	void Renderer2D::FlushPoints()
+	{
+		for (int i = 0; i < s_Data.TextureSlotsIndex; i++)
+			s_Data.TextureSlots[i]->Bind(i);
+
+		RendererCommand::DrawIndexed(s_Data.PointVertexArray,RenderType::Point, s_Data.PointIndicesCount);
+
+		s_Data.Stats.DrawCalls++;
 	}
 
 
@@ -852,7 +931,7 @@ namespace Resug
 	{
 		float texIndex = 0.0f;
 		float texZoomLevel = 1.0f;
-		glm::vec2 texCoords[3] = {
+		glm::vec2 texCoords[2] = {
 			{0.0f, 0.0f},
 			{1.0f, 1.0f}
 		};
@@ -871,11 +950,36 @@ namespace Resug
 		s_Data.LineVertexBufferPtr->TexZoomLevel = texZoomLevel;
 		s_Data.LineVertexBufferPtr++;
 
+
+
 		s_Data.LineIndicesCount += 2;
 		s_Data.Stats.LineCount++;
 
 
 	}
+
+	void Renderer2D::DrawPoint(glm::mat4 transform, glm::vec4 color, glm::vec4 vertexPosition)
+	{
+		float texIndex = 0.0f;
+		float texZoomLevel = 1.0f;
+		glm::vec2 texCoords[3] = {
+			{0.0f, 0.0f},
+			{1.0f, 1.0f}
+		};
+
+
+		s_Data.PointVertexBufferPtr->Position = transform * vertexPosition;
+		s_Data.PointVertexBufferPtr->Color = color;
+		s_Data.PointVertexBufferPtr->TexCoord = texCoords[0];
+		s_Data.PointVertexBufferPtr->TexIndex = texIndex;
+		s_Data.PointVertexBufferPtr->TexZoomLevel = texZoomLevel;
+		s_Data.PointVertexBufferPtr++;
+
+		s_Data.PointIndicesCount += 1;
+		s_Data.Stats.PointCount++;
+	}
+
+
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Statistics));

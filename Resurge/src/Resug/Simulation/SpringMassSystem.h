@@ -6,6 +6,8 @@
 #include "MassPoint.h"
 #include "Spring.h"
 
+#include "Geometry2D.h"
+
 namespace Resug {
 
 
@@ -73,19 +75,15 @@ namespace Resug {
             isIntialize = true;
         }
 
-        void OnUpdate(double dt)
-        {
-            if (!isIntialize) return;
-
-            ComputeForces();
-            IntegrateSemiImplicitEuler(dt);
-            HandleGroundCollision();
-        }
+        void OnUpdate(double dt);
 
         // 获取点数量
         size_t GetPointCount() const { return m_Points.size(); }
 
+
+        void SetPointFixed(int i, const bool& fixed)  { m_Points[i].Fixed = fixed; }
         // 获取点位置（用于渲染）
+        void SetPointPosition(int i, const glm::dvec3& position)  { m_Points[i].Position = position; }
         const glm::dvec3& GetPointPosition(int i) const { return m_Points[i].Position; }
 
         // 获取弹簧数量
@@ -98,12 +96,16 @@ namespace Resug {
             b = m_Springs[i].PointB;
         }
 
+        void SetIntialize(bool value) { isIntialize = value; }
         bool GetIntialize() const { return isIntialize; }
 
     private:
         void ComputeForces();
         void IntegrateSemiImplicitEuler(double dt);
         void HandleGroundCollision();
+
+        void HandleConvexPolygonCollision(const ConvexPolygon2D& polygon);
+
 
     private:
         bool isIntialize = false;

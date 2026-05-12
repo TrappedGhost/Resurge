@@ -21,6 +21,7 @@ namespace Resug
 		static void InitCircle();
 		static void InitTriangle();
 		static void InitLine();
+		static void InitPoint();
 
 		static void BeginScene(Camera& camera, glm::dmat4 transform);
 		static void BeginScene(glm::dmat4 projection, glm::dmat4 transform);
@@ -31,6 +32,7 @@ namespace Resug
 		static void Flush();
 		static void FlushTriangles();
 		static void FlushLines();
+		static void FlushPoints();
 		
 		static void FlushAndReset();
 
@@ -62,6 +64,8 @@ namespace Resug
 
 		//Line
 		static void DrawLine(glm::mat4 transform, glm::vec4 color, glm::vec4 vertexPosition1, glm::vec4 vertexPosition2);
+		static void DrawPoint(glm::mat4 transform, glm::vec4 color, glm::vec4 vertexPosition);
+
 
 		//Stats;
 		struct Statistics
@@ -70,8 +74,9 @@ namespace Resug
 			uint32_t QuadCount = 0;
 			uint32_t TriangleCount = 0;
 			uint32_t LineCount = 0;
-			uint32_t GetTotalVertexCount() { return QuadCount * 4 + TriangleCount * 3 + LineCount * 2; }
-			uint32_t GetTotalIndexCount() { return QuadCount * 6 + TriangleCount * 3 + LineCount * 2; }
+			uint32_t PointCount = 0;
+			uint32_t GetTotalVertexCount() { return QuadCount * 4 + TriangleCount * 3 + LineCount * 2 + PointCount * 1; }
+			uint32_t GetTotalIndexCount()  { return QuadCount * 6 + TriangleCount * 3 + LineCount * 2 + PointCount * 1; }
 		};
 
 		static Statistics GetStats();

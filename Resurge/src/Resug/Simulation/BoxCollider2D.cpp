@@ -9,6 +9,10 @@ namespace Resug
 	{
 		m_Type = ColliderType::Box2D;
 		Collider::Colliders.push_back(this);
+
+		m_Polygon = CreateRef<ConvexPolygon2D>();
+		m_Polygon->vertiesPosition = { glm::dvec3(-0.5f, -0.5f, 0.0f), glm::dvec3(0.5f, -0.5f, 0.0f), glm::dvec3(0.5f,  0.5f, 0.0f), glm::dvec3(-0.5f,  0.5f, 0.0f) };
+		Geometry2D::Polygons.push_back(m_Polygon);
 	}
 
 	glm::dvec3 BoxCollider2D::OnUpdate(double ts, glm::dvec3 velocity)
@@ -34,13 +38,7 @@ namespace Resug
 					BoxCollider2D* collider = (BoxCollider2D*)Collider::Colliders[i];
 					for (int j = 0; j < 4; j++)
 					{
-						//std::cout<<BoxCollider2D::BoxCollider2Ds[i]->m_VertexPosition[j] << " ";
-						if (PointInPolygon(m_VertexPosition[j],
-							collider->m_VertexPosition,
-							collider->m_VertexSize))
-						{
-							isCollide = true;
-						}
+
 					}
 				}
 			}
@@ -63,6 +61,12 @@ namespace Resug
 				m_VertexVelocity[i] = glm::dvec3(0.0f);
 			}
 		}
+
+		m_Polygon->vertiesPosition[0] = m_VertexPosition[0];
+		m_Polygon->vertiesPosition[1] = m_VertexPosition[1];
+		m_Polygon->vertiesPosition[2] = m_VertexPosition[2];
+		m_Polygon->vertiesPosition[3] = m_VertexPosition[3];
+
 		return displacement;
 	}
 }

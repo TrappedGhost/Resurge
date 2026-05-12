@@ -286,7 +286,7 @@ namespace Resug
         {
             bool componentShouldDelete = false;
 
-            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(Mesh2DComponent).hash_code(), treeFlag, "MeshRendererComponent"));
+            bool treeNode = (ImGui::TreeNodeEx((void*)typeid(Mesh2DComponent).hash_code(), treeFlag, "Mesh2DComponent"));
             ImGui::SameLine();
             if (ImGui::Button("Component Setting"))
                 ImGui::OpenPopup("ComponentSetting");
@@ -300,7 +300,62 @@ namespace Resug
             {
 
                 auto& mesh = m_Entity.GetComponent<Mesh2DComponent>().Mesh;
+                if (ImGui::CollapsingHeader("Vertices List", ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    int totalVertices = mesh.m_Width * mesh.m_Height;
 
+                    if (ImGui::BeginChild("VerticesList", ImVec2(0, 300), true))
+                    {
+                        for (int i = 0; i < totalVertices; i++)
+                        {
+                            // 如果只显示特定顶点
+                            static int focusedVertex = -1;
+
+                            glm::dvec4 vertex = mesh.GetVertexPosition(i);
+
+                            ImGui::PushID(i);
+
+                            // 顶点标题（可收缩）
+                            char label[64];
+                            snprintf(label, sizeof(label), "Vertex %d##%d", i, i);
+
+                            bool vertexOpen = ImGui::TreeNodeEx(label,
+                                ImGuiTreeNodeFlags_AllowItemOverlap |
+                                (focusedVertex == i ? ImGuiTreeNodeFlags_Selected : 0));
+
+                            // 右键菜单
+                            if (ImGui::BeginPopupContextItem())
+                            {
+                                if (ImGui::MenuItem("Focus"))
+                                {
+                                    focusedVertex = i;
+                                }
+                                if (ImGui::MenuItem("Reset Position"))
+                                {
+                                    // 重置位置
+                                    mesh.SetVertexPosition(i, glm::dvec4(0.0));
+                                }
+                                ImGui::EndPopup();
+                            }
+
+                            ImGui::PopID();
+
+                            if (vertexOpen)
+                            {
+                                // 顶点坐标编辑
+                                float pos[4] = { (float)vertex.x, (float)vertex.y, (float)vertex.z, (float)vertex.w };
+                                if (ImGui::InputFloat4("Position", pos))
+                                {
+                                    mesh.SetVertexPosition(i, glm::dvec4(pos[0], pos[1], pos[2], pos[3]));
+                                }
+
+
+                                ImGui::TreePop();
+                            }
+                        }
+                    }
+                    ImGui::EndChild();
+                }
                 ImGui::TreePop();
             }
 

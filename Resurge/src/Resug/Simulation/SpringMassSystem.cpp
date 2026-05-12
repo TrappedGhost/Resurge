@@ -6,6 +6,21 @@
 
 namespace Resug
 {
+    void SpringMassSystem::OnUpdate(double dt)
+    {
+        //if (!isIntialize) return;
+
+        ComputeForces();
+        IntegrateSemiImplicitEuler(dt);
+        HandleGroundCollision();
+
+		for (auto& polygon : Geometry2D::Polygons)
+        {
+            HandleConvexPolygonCollision(*polygon);
+			//std::cout << polygon->vertiesPosition[0] << " " << polygon->vertiesPosition[1] << " " << polygon->vertiesPosition[2] << " " << polygon->vertiesPosition[3] << "\n";
+        }
+
+    }
     void SpringMassSystem::ComputeForces()
     {
         // 重置所有力
@@ -51,6 +66,7 @@ namespace Resug
                 b.Force -= force;
             }
         }
+        //std::cout << m_Points[1].Force << " ";
     }
 
     void SpringMassSystem::IntegrateSemiImplicitEuler(double dt)
@@ -77,7 +93,9 @@ namespace Resug
 
             // 再更新位置
             point.Position += point.Velocity * dt;
+
         }
+            //std::cout << m_Points[5].Velocity << "\n";
     }
 
     void SpringMassSystem::HandleGroundCollision()
@@ -110,5 +128,68 @@ namespace Resug
                 }
             }
         }
+    }
+    void SpringMassSystem::HandleConvexPolygonCollision(const ConvexPolygon2D& polygon)
+    {
+        for (auto& point : m_Points)
+         {
+             if (point.Fixed) continue;
+             // 简单的点-多边形碰撞检测
+             if (!Geometry2D::IsPointInsideConvexPolygon(point.Position, polygon))continue;
+             glm::dvec3 closestPoint, penetration, dir, s1, s2;
+			 uint32_t polygonSize = polygon.vertiesPosition.size();
+             double minDistance = Geometry2D::PointToSegmentDistance(point.Position, polygon.vertiesPosition[0], polygon.vertiesPosition[1]);
+			 for (uint32_t i = 1; i < polygonSize; i++)
+             {
+				 uint32_t j = (i + 1) % polygonSize;
+				 double distance = Geometry2D::PointToSegmentDistance(point.Position, polygon.vertiesPosition[i], polygon.vertiesPosition[j]);
+                 if (minDistance > distance)
+                 {
+                     minDistance = distance;
+					 s1 = polygon.vertiesPosition[i];
+					 s2 = polygon.vertiesPosition[j];
+                 }
+             }
+			 closestPoint = Geometry2D::ClosestPointOnSegment(point.Position, s1, s2);
+             penetration = point.Position - closestPoint;
+
+             double depth = glm::length(penetration);
+			 if (depth < 0.01f) continue; // 避免过度修正
+
+			 dir = glm::normalize(penetration);
+
+             dir = -dir;
+             
+
+             point.Position = closestPoint + dir * 0.001;
+
+			 // 反弹
+             // 计算法线方向的速度分量
+             double velAlongNormal = glm::dot(point.Velocity, dir);
+
+             if (velAlongNormal > 0) continue;
+
+             double restitution = polygon.restitution;
+
+             // 计算新的法线方向速度
+             double newVelAlongNormal = -velAlongNormal * restitution;
+
+
+             // 更新速度（切向分量保留，加上摩擦）
+             glm::dvec3 tangentVelocity = point.Velocity - dir * velAlongNormal;
+
+             // 应用摩擦
+             double friction = polygon.friction;
+             tangentVelocity *= (1.0 - friction);
+
+             // 合成新速度
+             point.Velocity = tangentVelocity + dir * newVelAlongNormal;
+
+             // 防止微小抖动
+             if (glm::length(point.Velocity) < 0.01)
+             {
+                 point.Velocity = glm::dvec3(0);
+             }
+		}
     }
 }

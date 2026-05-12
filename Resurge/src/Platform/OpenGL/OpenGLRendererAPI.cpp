@@ -11,6 +11,8 @@ void Resug::OpenGLRendererAPI::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
+
+	glPointSize(5.0f);
 }
 
 void Resug::OpenGLRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
@@ -48,7 +50,10 @@ void Resug::OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& v
 		glDrawElements(GL_TRIANGLES, Count, GL_UNSIGNED_INT, nullptr);
 		break;
 	case Resug::RenderType::Line:
-		glDrawElements(GL_LINES, Count, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_LINES,     Count, GL_UNSIGNED_INT, nullptr);
+		break;
+	case Resug::RenderType::Point:
+		glDrawElements(GL_POINTS,    Count, GL_UNSIGNED_INT, nullptr);
 		break;
 	default:
 		break;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include"Collider.h"
-
+#include"Geometry2D.h"
 namespace Resug
 {
 	class BoxCollider2D :public Collider
@@ -19,6 +19,7 @@ namespace Resug
 		glm::dvec3 m_VertexDisplacement[4];
 		uint32_t m_VertexSize = 4;
 
+		Ref<ConvexPolygon2D> m_Polygon;
 
 		bool m_OnGround = false;
 	};

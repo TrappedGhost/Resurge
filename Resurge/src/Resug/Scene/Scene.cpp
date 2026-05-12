@@ -83,28 +83,28 @@ namespace Resug
 				case Resug::SpriteRendererComponent::SpriteTpye::Circle:
 				{
 					float radius = sprite.radius;
-					glm::dvec4 center = glm::dvec4(0.0f, 0.0f, 0.0f, 1.0f);
+					glm::vec4 center = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 					int segments = 32;
-					glm::dvec4 color = sprite.Color;
+					glm::vec4 color = sprite.Color;
 					float angleStep = 2.0f * 3.14159265358979323846f / segments;
 					for (int i = 0; i < segments; ++i)
 					{
 						float angle1 = i * angleStep;
 						float angle2 = (i + 1) * angleStep;
-						glm::dvec4 p1(
+						glm::vec4 p1(
 							center.x + radius * cos(angle1),
 							center.y + radius * sin(angle1),
 							center.z,
 							1.0f
 						);
-						glm::dvec4 p2(
+						glm::vec4 p2(
 							center.x + radius * cos(angle2),
 							center.y + radius * sin(angle2),
 							center.z,
 							1.0f
 						);
-						glm::dvec4 triangle[3] = { center, p1, p2 };
-						//Renderer2D::DrawTriangle(transform, color, triangle);
+						glm::vec4 triangle[3] = { center, p1, p2 };
+						Renderer2D::DrawTriangle(glm::mat4(transform.GetTransform()), color, triangle);
 					}
 					break;
 				}
@@ -121,7 +121,7 @@ namespace Resug
 			view.each([&](auto entity, TransformComponent& transform, Mesh2DComponent& meshCom, SpriteRendererComponent sprite)
 				{
 					auto& mesh = meshCom.Mesh;
-					MeshRenderType meshRenderType = mesh.m_RenderType;
+					Mesh2DType meshType = mesh.GetType();
 
 					uint32_t unitWidth = mesh.GetWidth();
 					uint32_t unitHeight = mesh.GetHeight();
@@ -133,6 +133,13 @@ namespace Resug
 
 					if(transform.Rotation != mesh.GetRotation())
 					{
+						for (int i = 0; i < size; i++)
+						{
+							glm::dvec4 vertexPos = mesh.GetVertexPosition(i) - vertex0Postion;
+							vertexPos = glm::rotate(glm::dmat4(1.0), glm::radians(transform.Rotation.z - mesh.GetRotation().z), { 0.0,0.0,1.0 }) * vertexPos;
+							mesh.SetVertexPosition(i, vertexPos + vertex0Postion);
+						}
+
 						mesh.SetRotation(transform.Rotation);
 					}
 
@@ -150,9 +157,9 @@ namespace Resug
 					}
 
 
-					switch (meshRenderType)
+					switch (meshType)
 					{
-					case MeshRenderType::Quad:
+					case Mesh2DType::Quad:
 						
 						vertex0Postion.w = 0.0f;
 
@@ -171,18 +178,18 @@ namespace Resug
 						{
 							for (int j = 0; j < unitWidth - 1; j++)
 							{
-								glm::dvec4 l1 = mesh.GetVertexPosition(j, i) - vertex0Postion;
-								glm::dvec4 r1 = mesh.GetVertexPosition(j + 1, i) - vertex0Postion;
-								glm::dvec4 r2 = mesh.GetVertexPosition(j + 1, i + 1) - vertex0Postion;
-								glm::dvec4 l2 = mesh.GetVertexPosition(j, i + 1) - vertex0Postion;
+								glm::vec4 l1 = glm::vec4(mesh.GetVertexPosition(j, i) - vertex0Postion);
+								glm::vec4 r1 = glm::vec4(mesh.GetVertexPosition(j + 1, i) - vertex0Postion);
+								glm::vec4 r2 = glm::vec4(mesh.GetVertexPosition(j + 1, i + 1) - vertex0Postion);
+								glm::vec4 l2 = glm::vec4(mesh.GetVertexPosition(j, i + 1) - vertex0Postion);
 
-								glm::dvec4 QuadVertex[4] = { l1, r1, r2, l2 };
-								//Renderer2D::DrawQuad(transform, sprite.Color, QuadVertex);
+								glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
+								Renderer2D::DrawQuad(glm::mat4(transform.GetTransform()), sprite.Color, QuadVertex);
 							}
 						}
 
 						break;
-					case MeshRenderType::Line:
+					case Mesh2DType::Line:
 						
 						vertex0Postion.w = 0.0;
 
@@ -191,14 +198,18 @@ namespace Resug
 						for (int i = 0; i < unitHeight; i++)
 						{
 							mesh.SetVertexPosition(i, mesh.GetVertexPosition( i) + transitionVector);
-							
 						}
+						for (int i = 0; i < unitHeight; i++)
+						{
+							glm::vec4 point = glm::vec4(mesh.GetVertexPosition(i) - vertex0Postion);
+							Renderer2D::DrawPoint(glm::mat4(transform.GetTransform()), sprite.Color, point);
+						}
+
 						for (int i = 0; i < unitHeight - 1; i++)
 						{
-							glm::dvec4 l1 = mesh.GetVertexPosition(i) - vertex0Postion;
-							glm::dvec4 l2 = mesh.GetVertexPosition(i + 1) - vertex0Postion;
-
-							//Renderer2D::DrawLine(transform, sprite.Color, l1, l2);
+							glm::vec4 l1 = glm::vec4(mesh.GetVertexPosition(i) - vertex0Postion);
+							glm::vec4 l2 = glm::vec4(mesh.GetVertexPosition(i + 1) - vertex0Postion);
+							Renderer2D::DrawLine(glm::mat4(transform.GetTransform()), sprite.Color, l1, l2);
 						}
 							//std::cout << "\n";
 						break;
@@ -244,11 +255,79 @@ namespace Resug
 
 		///////////////SMS2DComponent//////
 		{
-			auto view = m_Registry.view<Mesh2DComponent, SMS2DComponent>();
-			view.each([&](auto entity, Mesh2DComponent& mesherendercom, SMS2DComponent& smsCom)
+			auto view = m_Registry.view<Mesh2DComponent, SMS2DComponent,TransformComponent>();
+			view.each([&](auto entity, Mesh2DComponent& meshCom, SMS2DComponent& smsCom, TransformComponent& transform)
 				{
-					auto& mesh = mesherendercom.Mesh;
+					//std::cout << "Start\n";
+
+					auto& mesh = meshCom.Mesh;
 					auto& sms = smsCom.SMS;
+
+					Mesh2DType meshType = mesh.GetType();
+
+					uint32_t unitWidth = mesh.GetWidth();
+					uint32_t unitHeight = mesh.GetHeight();
+					uint32_t size = unitWidth * unitHeight;
+
+					if (!sms.GetIntialize())
+					{
+						RG_CORE_INFO("Start Initialize SpringMassSystem");
+
+						for (int i = 0; i < size; i++)
+						{
+							sms.AddPoint(mesh.GetVertexPosition(i));
+						}
+
+						switch (meshType)
+						{
+						case Mesh2DType::Quad:
+							for (int i = 0; i < unitHeight; i++)
+							{
+								for (int j = 0; j < unitWidth; j++)
+								{
+									uint32_t index = i * unitWidth + j;
+									if (j != unitWidth - 1)sms.AddSpring(index, index + 1);
+									
+									if (i != unitHeight - 1)sms.AddSpring(index, index + unitWidth);
+
+									if (j != unitWidth - 1 && i != unitHeight - 1)
+									{
+										sms.AddSpring(index, index + unitWidth + 1);
+										sms.AddSpring(index + 1, index + unitWidth);
+									}
+								}
+							}
+							break;
+						case Mesh2DType::Line:
+							for (int i = 0; i < unitHeight - 1; i++)
+							{
+								uint32_t index = i;
+								sms.AddSpring(index, index + 1);
+							}
+							sms.SetPointFixed(unitHeight-1, true);
+							break;
+						default:
+							break;
+						}
+
+						sms.SetIntialize(true);
+					}
+
+
+
+
+					for(int i=0;i<size;i++)
+					{
+						sms.SetPointPosition(i, mesh.GetVertexPosition(i));
+					}
+
+					sms.OnUpdate(ts);
+
+					for (int i = 0; i < size; i++)
+					{
+						mesh.SetVertexPosition(i, glm::dvec4(sms.GetPointPosition(i), 1.0));
+					}
+					transform.Position = glm::dvec3(mesh.GetVertexPosition(0));
 
 					//collider.SetVertexSize(render.GetHeight() * render.GetWidth());
 					//uint32_t size = collider.m_VertexSize;
@@ -444,27 +523,71 @@ namespace Resug
 		{
 			Renderer2D::BeginScene(mainCameraProjection, cameraTransform);
 		}
-		//Sprite///////////
+
+
+		/////////////////////////////SpriteRendererComponent////////////////////
 		{
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-				glm::dvec4 Triangle1[3] = {
-					glm::dvec4(-0.5f, -0.5f, 0.0f, 1.0f),
-					glm::dvec4(0.5f, -0.5f, 0.0f, 1.0f),
-					glm::dvec4(0.5f,  0.5f, 0.0f, 1.0f)
-				};
-				glm::dvec4 Triangle2[3] = {
-					glm::dvec4(-0.5f, -0.5f, 0.0f, 1.0f),
-					glm::dvec4(-0.5f, 0.5f, 0.0f, 1.0f),
-					glm::dvec4(0.5f,  0.5f, 0.0f, 1.0f)
-				};
-				//Renderer2D::DrawTriangle(transform, sprite.Color, Triangle1);
-				//Renderer2D::DrawTriangle(transform, sprite.Color, Triangle2);
 
+				Resug::SpriteRendererComponent::SpriteTpye switch_on = sprite.Type;
+
+				switch (switch_on)
+				{
+				case Resug::SpriteRendererComponent::SpriteTpye::Quad:
+				{
+					glm::vec4 Triangle1[3] =
+					{
+						glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+						glm::vec4(0.5f, -0.5f, 0.0f, 1.0f),
+						glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+					};
+					glm::vec4 Triangle2[3] =
+					{
+						glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f),
+						glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f),
+						glm::vec4(0.5f,  0.5f, 0.0f, 1.0f)
+					};
+					Renderer2D::DrawTriangle(glm::mat4(transform.GetTransform()), sprite.Color, Triangle1);
+					Renderer2D::DrawTriangle(glm::mat4(transform.GetTransform()), sprite.Color, Triangle2);
+					break;
+				}
+				case Resug::SpriteRendererComponent::SpriteTpye::Circle:
+				{
+					float radius = sprite.radius;
+					glm::vec4 center = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+					int segments = 32;
+					glm::vec4 color = sprite.Color;
+					float angleStep = 2.0f * 3.14159265358979323846f / segments;
+					for (int i = 0; i < segments; ++i)
+					{
+						float angle1 = i * angleStep;
+						float angle2 = (i + 1) * angleStep;
+						glm::vec4 p1(
+							center.x + radius * cos(angle1),
+							center.y + radius * sin(angle1),
+							center.z,
+							1.0f
+						);
+						glm::vec4 p2(
+							center.x + radius * cos(angle2),
+							center.y + radius * sin(angle2),
+							center.z,
+							1.0f
+						);
+						glm::vec4 triangle[3] = { center, p1, p2 };
+						Renderer2D::DrawTriangle(glm::mat4(transform.GetTransform()), color, triangle);
+					}
+					break;
+				}
+				default:
+					break;
+				}
 			}
 		}
+
 		////////////////////////////MeshRendererComponent/////////////////
 
 		{
@@ -472,39 +595,102 @@ namespace Resug
 			view.each([&](auto entity, TransformComponent& transform, Mesh2DComponent& meshCom, SpriteRendererComponent sprite)
 				{
 					auto& mesh = meshCom.Mesh;
+					MeshRenderType meshRenderType = mesh.m_RenderType;
+
 					uint32_t unitWidth = mesh.GetWidth();
 					uint32_t unitHeight = mesh.GetHeight();
+					uint32_t size = unitWidth * unitHeight;
 
 					glm::dvec4 vertex0Postion = mesh.GetVertexPosition(0);
 
-					vertex0Postion.w = 0.0;
+					glm::dvec4 transitionVector = glm::dvec4(0.0f);
 
-					glm::dvec4 transitionVector = glm::dvec4(transform.Position - glm::dvec3(vertex0Postion), 0.0);
-
-					for (int i = 0; i < unitHeight; i++)
+					if (transform.Rotation != mesh.GetRotation())
 					{
-						for (int j = 0; j < unitWidth; j++)
+						for (int i = 0; i < size; i++)
 						{
-							mesh.SetVertexPosition(j, i, mesh.GetVertexPosition(j, i) + transitionVector);
+							glm::dvec4 vertexPos = mesh.GetVertexPosition(i) - vertex0Postion;
+							vertexPos = glm::rotate(glm::dmat4(1.0), glm::radians(transform.Rotation.z - mesh.GetRotation().z), { 0.0,0.0,1.0 }) * vertexPos;
+							mesh.SetVertexPosition(i, vertexPos + vertex0Postion);
 						}
+
+						mesh.SetRotation(transform.Rotation);
+					}
+
+					//glm::dvec3 scaleRatio = transform.Scale / mesh.GetScale();
+
+					if (transform.Scale != mesh.GetScale())
+					{
+						for (int i = 0; i < size; i++)
+						{
+							glm::dvec4 vertexPos = mesh.GetVertexPosition(i) - vertex0Postion;
+							vertexPos = glm::scale(glm::dmat4(1.0f), transform.Scale / mesh.GetScale()) * vertexPos;
+							mesh.SetVertexPosition(i, vertexPos + vertex0Postion);
+						}
+						mesh.SetScale(transform.Scale);
 					}
 
 
-					for (int i = 0; i < unitHeight - 1; i++)
+					switch (meshRenderType)
 					{
-						for (int j = 0; j < unitWidth - 1; j++)
+					case MeshRenderType::Quad:
+
+						vertex0Postion.w = 0.0f;
+
+						transitionVector = glm::dvec4(transform.Position - glm::dvec3(vertex0Postion), 0.0f);
+
+
+
+						for (int i = 0; i < unitHeight; i++)
 						{
-
-							glm::dvec4 l1 = mesh.GetVertexPosition(j, i) - vertex0Postion;
-							glm::dvec4 r1 = mesh.GetVertexPosition(j + 1, i) - vertex0Postion;
-							glm::dvec4 r2 = mesh.GetVertexPosition(j + 1, i + 1) - vertex0Postion;
-							glm::dvec4 l2 = mesh.GetVertexPosition(j, i + 1) - vertex0Postion;
-
-							glm::dvec4 QuadVertex[4] = { l1, r1, r2, l2 };
-
-							//Renderer2D::DrawQuad(transform, sprite.Color, QuadVertex);
+							for (int j = 0; j < unitWidth; j++)
+							{
+								mesh.SetVertexPosition(j, i, mesh.GetVertexPosition(j, i) + transitionVector);
+							}
 						}
+						for (int i = 0; i < unitHeight - 1; i++)
+						{
+							for (int j = 0; j < unitWidth - 1; j++)
+							{
+								glm::vec4 l1 = glm::vec4(mesh.GetVertexPosition(j, i) - vertex0Postion);
+								glm::vec4 r1 = glm::vec4(mesh.GetVertexPosition(j + 1, i) - vertex0Postion);
+								glm::vec4 r2 = glm::vec4(mesh.GetVertexPosition(j + 1, i + 1) - vertex0Postion);
+								glm::vec4 l2 = glm::vec4(mesh.GetVertexPosition(j, i + 1) - vertex0Postion);
+
+								glm::vec4 QuadVertex[4] = { l1, r1, r2, l2 };
+								Renderer2D::DrawQuad(glm::mat4(transform.GetTransform()), sprite.Color, QuadVertex);
+							}
+						}
+
+						break;
+					case MeshRenderType::Line:
+
+						vertex0Postion.w = 0.0;
+
+						transitionVector = glm::dvec4(transform.Position - glm::dvec3(vertex0Postion), 0.0);
+
+						for (int i = 0; i < unitHeight; i++)
+						{
+							mesh.SetVertexPosition(i, mesh.GetVertexPosition(i) + transitionVector);
+						}
+						for (int i = 0; i < unitHeight; i++)
+						{
+							glm::vec4 point = glm::vec4(mesh.GetVertexPosition(i) - vertex0Postion);
+							Renderer2D::DrawPoint(glm::mat4(transform.GetTransform()), sprite.Color, point);
+						}
+
+						for (int i = 0; i < unitHeight - 1; i++)
+						{
+							glm::vec4 l1 = glm::vec4(mesh.GetVertexPosition(i) - vertex0Postion);
+							glm::vec4 l2 = glm::vec4(mesh.GetVertexPosition(i + 1) - vertex0Postion);
+							Renderer2D::DrawLine(glm::mat4(transform.GetTransform()), sprite.Color, l1, l2);
+						}
+						//std::cout << "\n";
+						break;
+					default:
+						break;
 					}
+
 				});
 		}
 		//NativeScriptComponent////////////////
